@@ -1,6 +1,6 @@
 <?php
 
-abstract class Security_User
+class Security_User
 {
     protected static $_instance = null;
 
@@ -10,11 +10,6 @@ abstract class Security_User
     {}
 
     private function __construct()
-    {
-        
-    }
-
-    protected function _initialize()
     {
         if (($auth = Zend_Auth::getInstance()->getIdentity()) && isset($auth->{$this->getIdentityColumn()})) {
             
@@ -33,9 +28,17 @@ abstract class Security_User
             }
         } else {
             
-            $this->_setVar('acl_role_id', null);
+            // @TODO set to anonymous
         }
     }
+    
+    public static function getInstance()
+	{
+		if (null === self::$_instance) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
     
     public function isLoggedIn()
     {
@@ -101,7 +104,7 @@ abstract class Security_User
     
     public function getTableName()
     {
-        return Security_System::getInstance()->getOption('tableName');
+        return Security_System::getInstance()->getOption('accountTable');
     }
     
     public function getIdentityColumn()

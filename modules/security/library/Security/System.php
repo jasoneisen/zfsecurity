@@ -11,8 +11,8 @@ final class Security_System
     private $_dirs =            array('base'      =>  null,
                                       'configs'   =>  '/configs');
     
-    private $_options =         array('accountModel'                =>  'Security_User',
-                                      'accountTable'                =>  'Accounts',
+    private $_options =         array('accountModel'                =>  null,
+                                      'accountTable'                =>  null,
                                       'useSecurityErrorController'  =>  true);
     
     private $_enabled =         array('system'    =>  false,
@@ -39,7 +39,6 @@ final class Security_System
             set_include_path($paths . PATH_SEPARATOR . get_include_path());
         }
         
-        Zend_Loader::loadFile('Security/User/GroupLink.php');
         $this->_models = array_merge(Doctrine::loadModels($path . '/models', Doctrine::MODEL_LOADING_CONSERVATIVE),
                                      array('Group'.$this->getOption('accountModel')));
         
@@ -65,7 +64,20 @@ final class Security_System
                     $this->setEnabled($tag, $option->value);
                 }   
             }
+            
+            if (Zend_Loader::isReadable('Security/User/GroupLink.php')) {
+                require_once 'Security/User/GroupLink.php';
+            }
         }
+    }
+    
+    public static function getInstance()
+    {
+        if(null === self::$_instance) {
+            self::$_instance = new self();
+        }
+        
+        return self::$_instance;
     }
     
     private static function getModuleDir()
@@ -99,15 +111,6 @@ final class Security_System
         }
         
         return null;
-    }
-    
-    public static function getInstance()
-    {
-        if(null === self::$_instance) {
-            self::$_instance = new self();
-        }
-        
-        return self::$_instance;
     }
     
     public static function getAccountInstance() {

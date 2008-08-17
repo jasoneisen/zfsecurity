@@ -1,6 +1,6 @@
 <?php
 
-if (!$tableName = WebUser::getInstance()->getTableName()) {
+if (!$tableName = Security_System::getInstance()->getOption('accountTable')) {
 
     throw new Security_Exception('You must create an object that extends Security_User to use the Security module');
 }

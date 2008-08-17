@@ -51,6 +51,5 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		//	$request->setDispatched(false);
 		//	
 		//}
-		echo "ACL Activated";
     }
 }
