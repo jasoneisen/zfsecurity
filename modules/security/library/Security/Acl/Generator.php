@@ -6,9 +6,16 @@ class Security_Acl_Generator
         $fc = Zend_Controller_Front::getInstance();
         $resources = array();
         
+        die(print_r(Zend_Controller_Front::getInstance()->getControllerDirectory()));
         foreach ($fc->getControllerDirectory() as $dir_path)
         {
-            $module = ($fc->getDefaultModule() == basename(dirname($dir_path))) ? 'default' : basename(dirname($dir_path));
+            if (basename(dirname($dir_path)) == 'default' || basename(dirname($dir_path)) = 'application') {
+                
+                $module = 'default';
+            } else {
+                
+                $module = basename(dirname($dir_path));
+            }
             
             $dir = dir($dir_path);
             
