@@ -1,0 +1,27 @@
+<h3>Update ACL</h3>
+<p>The following Resources/Privileges have been found in your application and will be added to the ACL</p>
+<?php if (isset($this->acl)): ?>
+<table>
+    <tr>
+        <th>Module</th>
+        <th>Resource</th>
+        <th>Privilege</th>
+    </tr>
+    <?php foreach($this->acl as $moduleName => $module): ?>
+        <?php foreach($module['resources'] as $resourceName => $resource): ?>
+            <?php foreach($resource['privileges'] as $privilegeName => $privilege): ?>
+                <?php if (isset($privilege['new'])): ?>
+    <tr>
+        <td><?php echo $moduleName; ?></td>
+        <td><?php echo $resourceName; ?></td>
+        <td><?php echo $privilegeName; ?></td>
+    </tr>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php endforeach; ?>
+    <?php endforeach; ?>
+</table>
+<?php endif; ?>
+<p>Are you sure?</p>
+<p><form method="post"><input type="submit" value="Update" /></form></p>
+<p><a href="<?php $this->Url(array('action'=>'index'))?>">&lt;&lt;Back</a></p>

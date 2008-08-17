@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<data>
+    <routes>
+        <account>
+            <module>security</module>
+        </account>
+        <group>
+            <module>security</module>
+        </group>
+        <user>
+            <custom>
+                <login>
+                </login>
+                <logout />
+                <lostpassword />
+                <verify />
+            </custom>
+        </user>
+    </routes>
+</data>
