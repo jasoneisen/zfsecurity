@@ -7,14 +7,5 @@
         <group>
             <module>security</module>
         </group>
-        <user>
-            <custom>
-                <login>
-                </login>
-                <logout />
-                <lostpassword />
-                <verify />
-            </custom>
-        </user>
     </routes>
 </data>

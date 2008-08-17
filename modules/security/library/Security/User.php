@@ -6,8 +6,6 @@ abstract class Security_User
 
     protected $_records = array();
 
-    protected $_tableName = "User";
-
     private function __clone()
     {}
 
@@ -20,7 +18,7 @@ abstract class Security_User
     {
         if (($auth = Zend_Auth::getInstance()->getIdentity()) && isset($auth->{$this->getIdentityColumn()})) {
             
-            if ($record = Doctrine::getTable($this->_tableName)->find($auth->{$this->getIdentityColumn()})) {}
+            if ($record = Doctrine::getTable($this->getTableName())->find($auth->{$this->getIdentityColumn()})) {}
             
             if ($record !== false) {
                 
@@ -29,10 +27,9 @@ abstract class Security_User
                     $this->_setVar($key, $value);
                 }
                 
-                // @TODO remove this
-                $this->_setVar('acl_role_id', 1);
+                // @TODO remove this, we need multiple groups
                 
-                $this->_setRecord($this->_tableName, $record);
+                $this->_setRecord($this->getTableName(), $record);
             }
         } else {
             
@@ -104,12 +101,12 @@ abstract class Security_User
     
     public function getTableName()
     {
-        return $this->_tableName;
+        return Security_System::getInstance()->getOption('tableName');
     }
     
     public function getIdentityColumn()
     {
-        return Doctrine::getTable($this->_tableName)->getIdentifier();
+        return Doctrine::getTable($this->getTableName())->getIdentifier();
     }
     
     //final public function __set()
