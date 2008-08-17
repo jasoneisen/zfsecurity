@@ -12,7 +12,7 @@ final class Security_System
                                       'configs'   =>  '/configs');
     
     private $_options =         array('accountModel'                =>  'Security_User',
-                                      'accountTable'                =>  'Accounts'
+                                      'accountTable'                =>  'Accounts',
                                       'useSecurityErrorController'  =>  true);
     
     private $_enabled =         array('system'    =>  false,
