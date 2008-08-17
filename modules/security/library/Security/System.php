@@ -39,8 +39,7 @@ final class Security_System
             set_include_path($paths . PATH_SEPARATOR . get_include_path());
         }
         
-        $this->_models = array_merge(Doctrine::loadModels($path . '/models', Doctrine::MODEL_LOADING_CONSERVATIVE),
-                                     array('Group'.$this->getOption('accountModel')));
+        $models = Doctrine::loadModels($path . '/models', Doctrine::MODEL_LOADING_CONSERVATIVE);
         
         try {
             
@@ -68,6 +67,8 @@ final class Security_System
             if (Zend_Loader::isReadable('Security/User/GroupLink.php')) {
                 require_once 'Security/User/GroupLink.php';
             }
+            
+            $this->_models = array_merge($models, array('Group'.$this->getOption('accountModel')));
         }
     }
     
