@@ -8,7 +8,7 @@ class Security_Acl_Generator
         
         foreach ($fc->getControllerDirectory() as $dir_path)
         {
-            if (basename(dirname($dir_path)) == 'default' || basename(dirname($dir_path)) = 'application') {
+            if (basename(dirname($dir_path)) == 'default' || basename(dirname($dir_path)) == 'application') {
                 
                 $module = 'default';
             } else {
