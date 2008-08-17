@@ -23,7 +23,7 @@ final class Security_System
     
     private $_front = null;
     
-    private $_models = null;
+    private $_models = array();
     
     private function __clone() {}
     
@@ -167,6 +167,6 @@ final class Security_System
     }
     
     public function getLoadedModels() {
-        return $this->_loadedModels;
+        return $this->_models;
     }
 }
