@@ -3,6 +3,7 @@
 class Security_Acl_Generator
 {
     public function getResources() {
+        
         $fc = Zend_Controller_Front::getInstance();
         $resources = array();
         
@@ -50,11 +51,10 @@ class Security_Acl_Generator
         $fc = Zend_Controller_Front::getInstance();
         foreach ($fc->getControllerDirectory() as $dir_path)
         {
-            $module = basename(dirname($dir_path));
-            $module = ($fc->getDefaultModule() == $module) ? null : $module .'_';
             $test_file = $dir_path . '/' . $controllerClass . '.php';
             if (file_exists($test_file))
             {
+                $module = basename(dirname($dir_path));
                 $controllerFile = $test_file;
                 break;
             }
@@ -66,7 +66,18 @@ class Security_Acl_Generator
         //echo "<u>".ucfirst($module).$controllerClass."</u><br>";
         // Inspect the controller class for methods
         require_once($controllerFile);
-        $reflect = new ReflectionClass($module.$controllerClass);
+        
+        if ($module == $fc->getDefaultModule() || $module == 'application') {
+            if ($fc->getParam('prefixDefaultModule')) {
+                $className = ucfirst($fc->getDefaultModule()).'_'.$controllerClass;
+            } else {
+                $className = $controllerClass;
+            }
+        } else {
+            $className = ucfirst($module).'_'.$controllerClass;
+        }
+        
+        $reflect = new ReflectionClass($className);
         $actions = array();
         
         foreach ($reflect->getMethods() as $method)
