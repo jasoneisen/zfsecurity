@@ -59,6 +59,9 @@ class Security_InstallController extends Security_Controller_Action_Backend
         $conn->exec("INSERT INTO `security_option` VALUES ('installed', 'Installed', '1', 'Wether or not Security System has been installed')");
         $conn->exec("INSERT INTO `security_option` VALUES ('system_enabled', 'Security System', '0', 'Enables/Disables the entire system.  This overrides all other enabled values.')");
         $conn->exec("INSERT INTO `security_option` VALUES ('use_security_error_controller', 'Security Error Controller', '1', 'Enables/Disables the use of the Security module''s error controller for security restrictions.')");
+        $conn->exec("INSERT INTO `security_option` VALUES ('accountModel', 'Web User Model Name', 'WebUser', 'The name of the model used with your online user.'");
+        $conn->exec("INSERT INTO `security_option` VALUES ('accountTable', 'Account Table Name', 'User', 'Database table where your accounts are stored.'");
+        
 
 	    $this->_forward('index');
 	}
