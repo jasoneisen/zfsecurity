@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<options>
+    <activeModel>WebUser</activeModel>
+    <accountTable>User</accountTable>
+    <useSecurityErrorController>1</useSecurityErrorController>
+</options>

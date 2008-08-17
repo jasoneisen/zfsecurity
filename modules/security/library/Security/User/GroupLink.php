@@ -41,7 +41,7 @@ class Group'.$tableName.' extends Doctrine_Record
             \'unsigned\'      =>  '.(!empty($column['unsigned']) ? 'true' : 'false').',
             \'primary\'       =>  '.(!empty($column['primary']) ? 'true' : 'false').',
             \'notnull\'       =>  '.(!empty($column['notnull']) ? 'true' : 'false').',
-            \'autoincrement\' =>  '.(!empty($column['autoincrement']) ? 'true' : 'false').'));
+            \'autoincrement\' =>  false));
         
     }
 

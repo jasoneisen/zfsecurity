@@ -8,10 +8,11 @@ final class Security_System
                                       '/models',
                                       '/models/generated');
     
-    private $_dirs =            array('base'      =>  null,
-                                      'configs'   =>  '/configs');
+    private $_dirs =            array('base'    =>  null,
+                                      'models'  =>  '/models',
+                                      'configs' =>  '/configs');
     
-    private $_options =         array('accountModel'                =>  null,
+    private $_options =         array('activeModel'                =>  null,
                                       'accountTable'                =>  null,
                                       'useSecurityErrorController'  =>  true);
     
@@ -23,8 +24,6 @@ final class Security_System
     
     private $_front = null;
     
-    private $_models = array();
-    
     private function __clone() {}
     
     private function __construct()
@@ -32,43 +31,48 @@ final class Security_System
         $path = self::getModuleDir();
         
         foreach ($this->_dirs as $name => $dir) {
-            $this->_dirs[$name] .= $path;
+            $this->_dirs[$name] = $path . $this->_dirs[$name];
         }
         
         if (($paths = self::getIncludePaths(true)) && !empty($paths)) {
             set_include_path($paths . PATH_SEPARATOR . get_include_path());
         }
         
-        $models = Doctrine::loadModels($path . '/models', Doctrine::MODEL_LOADING_CONSERVATIVE);
-        
-        try {
+        if (!Zend_Loader::isReadable($this->_dirs['configs'] . '/options.xml')) {
             
-            if ($options = Doctrine::getTable('SecurityOption')->findAll()) {
+            try {
                 
-                $this->_installed = true;
-            }
+                if ($options = Doctrine::getTable('SecurityOption')->findAll()) {
+                    
+                    foreach ($options as $option) {
 
-        } catch (Doctrine_Connection_Exception $e) {}
-        
-        if ($this->isInstalled()) {
-        
-            foreach ($options as $option) {
+                        if (!strstr($option->tag, '_enabled')) {
+
+                            $this->setOption($option->tag, $option->value);
+                        } else {
+
+                            list($tag) = explode('_', $option->tag, 2);
+                            $this->setEnabled($tag, $option->value);
+                        }   
+                    }
+                    
+                    $this->_installed = true;
+                }
             
-                if (!strstr($option->tag, '_enabled')) {
+            } catch (Doctrine_Connection_Exception $e) {}
             
-                    $this->setOption($option->tag, $option->value);
-                } else {
+        } else {
             
-                    list($tag) = explode('_', $option->tag, 2);
-                    $this->setEnabled($tag, $option->value);
-                }   
+            $options = simplexml_load_file($this->_dirs['configs'] . '/options.xml');
+            
+            foreach ($options as $name => $value) {
+                
+                $this->setOption($name, (string) $value);
             }
-            
-            if (Zend_Loader::isReadable('Security/User/GroupLink.php')) {
-                require_once 'Security/User/GroupLink.php';
-            }
-            
-            $this->_models = array_merge($models, array('Group'.$this->getOption('accountModel')));
+        }
+
+        if (Zend_Loader::isReadable('Security/User/GroupLink.php')) {
+            require_once 'Security/User/GroupLink.php';
         }
     }
     
@@ -115,7 +119,7 @@ final class Security_System
     }
     
     public static function getAccountInstance() {
-        $modelName = Security_System::getInstance()->getOption('accountModel');
+        $modelName = Security_System::getInstance()->getOption('activeModel');
         if (class_exists($modelName)) {
             
             if ($model = call_user_func($modelName.'::getInstance')) {
@@ -166,7 +170,7 @@ final class Security_System
         $this->_front = $front;
     }
     
-    public function getLoadedModels() {
-        return $this->_models;
+    public function getDir($name) {
+        return $this->_dirs[$name];
     }
 }
