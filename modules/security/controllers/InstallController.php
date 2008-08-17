@@ -33,8 +33,7 @@ class Security_InstallController extends Security_Controller_Action_Backend
 	    $secSys = Security_System::getInstance();
 	    
 	    if ($secSys->isInstalled()) {
-	        $this->_forward('index');
-	        return;
+	        $this->_redirect('/security');
 	    }
 	    
 	    $exporter = new Doctrine_Export();
@@ -64,7 +63,7 @@ class Security_InstallController extends Security_Controller_Action_Backend
             $conn->exec("INSERT INTO `security_option` VALUES ('accountTable', 'Account Table Name', 'User', 'Database table where your accounts are stored.')");
 	    }
 	    
-	    $this->_forward('index');
+	    $this->_redirect('/security');
 	}
 	
 	protected function _generateAcl()
