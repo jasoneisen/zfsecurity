@@ -7,7 +7,7 @@ class Security_Controller_Plugin_Loader extends Zend_Controller_Plugin_Abstract
 		$front = Zend_Controller_Front::getInstance();
 		
 		if (Security_System::getInstance()->isEnabled('acl')) {
-			die('wo');
+			
 			$front->registerPlugin(new Security_Controller_Plugin_Auth());
 		}
 	}
