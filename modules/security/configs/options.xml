@@ -1,7 +1,12 @@
 <?xml version="1.0"?>
 <options>
-    <activeModel>WebUser</activeModel>
-    <accountTable>User</accountTable>
+    <activeModelName>WebUser</activeModelName>
+    <accountTableName>User</accountTableName>
+    <identityColumnName>user_email</identityColumnName>
+    <identityColumnTitle>Email Address</identityColumnTitle>
+    <credentialColumnName>user_password</credentialColumnName>
+    <credentialColumnTitle>Password</credentialColumnTitle>
+    <credentialColumnTreatment>md5(?)</credentialColumnTreatment>
     <useSecurityErrorController>1</useSecurityErrorController>
     <getDbOptions>1</getDbOptions>
 </options>

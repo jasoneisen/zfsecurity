@@ -2,22 +2,19 @@
 
 class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 {
-    public function routeStartup(Zend_Controller_Request_Abstract $request)
-    {
-        
-    }
-    
     public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
-		$security = Security_System::getInstance();
+		$secSys = Security_System::getInstance();
 		
-		if (!$security->isEnabled('acl')) {
+		if (!$secSys->isEnabled('acl')) {
 			return;
 		}
 		
-		if (!$groups = $security->getActiveModel()->getRecord('Groups')) {
+		if (!isset($secSys->getActiveModel()->Groups) || !$secSys->getActiveModel()->Groups->count()) {
 		    
 		    $groups[] = (object) array('name' => 'Anonymous');
+		} else {
+		    $groups = $secSys->getActiveModel()->Groups;
 		}
 		
 		$acl = Security_Acl::getInstance();
@@ -40,26 +37,27 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		    	
 		    } catch (Exception $e) {
 		    	
-		    	if (!$security->getOption('useSecurityErrorController')) {
-		    		throw new Security_Acl_Exception($e->getMessage());
-		    	}
-		    	
 		    	$error = $e->getMessage();
 		    }
-		    
 	    }
         
 		if (isset($error)) {
-			
-			$security->setEnabled('acl', false);
-			
-			Zend_Layout::getMvcInstance()->getView()->error = $error;
-			
-			$request->setModuleName('security');
-			$request->setControllerName('error');
-			$request->setActionName('error');
-			$request->setDispatched(false);
-			
+		    
+		    if (!Security_System::getActiveModel()->isLoggedIn()) {
+		        
+		        $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector');
+		        $redirector->gotoRouteAndExit(array(), 'new_session_path', true);
+
+		    } else {
+		    
+		        $module = $secSys->getOption('useSecurityErrorController') ? 'security' : 'default';
+		            
+			    $request->setModuleName($module);
+			    $request->setControllerName('error');
+			    $request->setActionName('error');
+			    $request->setParam('error', $error);
+			    $request->setDispatched(false);
+		    }
 		}
     }
 }

@@ -7,7 +7,7 @@
  * @package unknown
  * @author jaeisenmenger@edrivemedia.com
  **/
-class Security_Form_Rest extends Zend_Form
+class Security_Form_Rest extends Security_Form
 {
 	/**
 	 * Undocumented function.

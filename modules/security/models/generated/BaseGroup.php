@@ -41,7 +41,7 @@ abstract class BaseGroup extends Doctrine_Record
 			'foreign'	=>	'acl_id',
 		    'refClass'  =>  'GroupAcl'));
 		
-		if ($singular = Security_System::getInstance()->getOption('accountTable')) {
+		if ($singular = Security_System::getInstance()->getOption('accountTableName')) {
 
 		    $plural = Doctrine_Inflector::pluralize($singular);
 		    

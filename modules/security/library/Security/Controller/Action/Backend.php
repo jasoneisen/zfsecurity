@@ -13,6 +13,16 @@ abstract class Security_Controller_Action_Backend extends Zend_Controller_Action
      */
     protected $_formNamespace = 'securityFormNamespace';
     
+    public function init()
+    {
+        $front = Zend_Controller_Front::getInstance();
+        $request = $this->getRequest();
+        
+        if ($request->getActionName() == $front->getDefaultAction() && $request->getActionName() != 'index') {
+            $this->_forward('index');
+        }
+    }
+    
     /**
      * Helper function to get the current form, or call _generateForm() if it has not been set
      * Also sets the form action for the rest controller plugin to use

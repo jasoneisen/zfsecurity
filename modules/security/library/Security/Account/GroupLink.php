@@ -1,6 +1,6 @@
 <?php
 
-$tableName = $this->getOption('accountTable');
+$tableName = $this->getOption('accountTableName');
 $accountTable = Doctrine::getTable($tableName);
 $accountIdentifier = $accountTable->getIdentifier();
 
@@ -11,6 +11,10 @@ if (is_array($accountIdentifier)) {
 
 $local = ($accountIdentifier == 'id') ? strtolower($tableName) .'_id' : $accountIdentifier;
 $column = $accountTable->getColumnDefinition($accountIdentifier);
+
+$collate = $accountTable->getOption('collate') ? '$this->option(\'collate\', \''.$accountTable->getOption('collate').'\');' : '';
+$charset = $accountTable->getOption('charset') ? '$this->option(\'charset\', \''.$accountTable->getOption('charset').'\');' : '';
+$type = $accountTable->getOption('type') ? '$this->option(\'type\', \''.$accountTable->getOption('type').'\');' : '';
 
 eval('
 class Group'.$tableName.' extends Doctrine_Record
@@ -32,9 +36,9 @@ class Group'.$tableName.' extends Doctrine_Record
             \'notnull\'       =>  '.(!empty($column['notnull']) ? 'true' : 'false').',
             \'autoincrement\' =>  false));
         
-        $this->option(\'collate\', \''.$accountTable->getOption('collate').'\');
-        $this->option(\'charset\', \''.$accountTable->getOption('charset').'\');
-        $this->option(\'type\', \''.$accountTable->getOption('type').'\');
+        '.$collate.'
+        '.$charset.'
+        '.$type.'
     }
 
     public function setUp()

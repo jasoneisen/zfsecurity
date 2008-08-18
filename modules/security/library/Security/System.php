@@ -12,8 +12,13 @@ final class Security_System
                                       'models'  =>  '/models',
                                       'configs' =>  '/configs');
     
-    private $_options =         array('activeModel'                =>  null,
-                                      'accountTable'                =>  null,
+    private $_options =         array('activeModelName'             =>  null,
+                                      'accountTableName'            =>  null,
+                                      'identityColumnName'          =>  null,
+                                      'identityColumnTitle'         =>  null,
+                                      'credentialColumnName'        =>  null,
+                                      'credentialColumnTitle'       =>  null,
+                                      'credentialColumnTreatment'   =>  null,
                                       'useSecurityErrorController'  =>  true);
     
     private $_enabled =         array('system'    =>  false,
@@ -71,8 +76,8 @@ final class Security_System
             }
         }
 
-        if (Zend_Loader::isReadable('Security/User/GroupLink.php')) {
-            require_once 'Security/User/GroupLink.php';
+        if (Zend_Loader::isReadable('Security/Account/GroupLink.php')) {
+            require_once 'Security/Account/GroupLink.php';
         }
     }
     
@@ -144,6 +149,11 @@ final class Security_System
             return $this->_options[$name];
         }
         return null;
+    }
+    
+    public function getOptions()
+    {
+        return $this->_options;
     }
     
     public function setOption($name, $value)

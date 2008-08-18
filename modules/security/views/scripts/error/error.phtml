@@ -1,2 +1,7 @@
-<h2>Security Error</h2>
+<h2>Error</h2>
+<?php if (isset($this->error)): ?>
 <p><?php echo $this->error; ?></p>
+<?php else: ?>
+<p>An unexpected error occurred.  Please use your browser's back button and try again.</p>
+<p>We apologize for any inconvenience.</p>
+<?php endif; ?>
