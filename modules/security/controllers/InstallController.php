@@ -33,9 +33,9 @@ class Security_InstallController extends Security_Controller_Action_Backend
 	{
 	    $secSys = Security_System::getInstance();
 	    
-	    if ($secSys->isInstalled()) {
-	        $this->_redirect('/security');
-	    }
+	    //if ($secSys->isInstalled()) {
+	    //    $this->_redirect('/security');
+	    //}
 	    
 	    $exporter = new Doctrine_Export();
 	    

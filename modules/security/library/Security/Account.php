@@ -11,20 +11,23 @@ class Security_Account
 
     private function __construct()
     {
-        if (($auth = Zend_Auth::getInstance()->getIdentity()) && isset($auth->{$this->getIdentityColumn()})) {
+        $tableName = Security_System::getInstance()->getOption('accountTableName');
+        $columnName = Doctrine::getTable($tableName)->getIdentifier();
+        
+        if (($auth = Zend_Auth::getInstance()->getIdentity()) && isset($auth->{$columnName})) {
             
             $query = Doctrine_Query::create()
-                                     ->from($this->getTableName())
-                                     ->leftJoin($this->getTableName().'.Groups g')
-                                     ->addWhere($this->getTableName() .'.'. $this->getIdentityColumn() .'= ?');
+                                     ->from($tableName)
+                                     ->leftJoin($tableName.'.Groups g')
+                                     ->addWhere($tableName .'.'. $columnName .'= ?');
             
-            if ($record = $query->fetchOne(array($auth->{$this->getIdentityColumn()}))) {
+            if ($record = $query->fetchOne(array($auth->{$columnName}))) {
                 
                 $this->_activeRecord = $record;
             }
         }
         
-        if (null === $this->_activeRecord) {
+        if (null === $this->_activeRecord || $this->_activeRecord instanceof Doctrine_Null) {
             
             $name = Security_System::getInstance()->getOption('accountTableName');
             $this->_activeRecord = new $name();
@@ -50,16 +53,6 @@ class Security_Account
     public function getActiveRecord()
     {
         return $this->_activeRecord;
-    }
-
-    public function getTableName()
-    {
-        return $this->getTable()->getTableName();
-    }
-    
-    public function getIdentityColumn()
-    {
-        return $this->getTable()->getIdentifier();
     }
     
     public function __get($name)

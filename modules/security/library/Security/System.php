@@ -49,7 +49,14 @@ final class Security_System
             
             foreach ($options as $name => $value) {
                 
-                $this->setOption($name, (string) $value);
+                if (!strstr($name, '_enabled')) {
+                    
+                    $this->setOption($name, (string) $value);
+                } else {
+                    
+                    list($tag) = explode('_', $name, 2);
+                    $this->setEnabled($tag, (string) $value);
+                }
             }
             
             if ($this->getOption('getDbOptions')) {
@@ -125,7 +132,7 @@ final class Security_System
     
     public static function getActiveModel() {
         
-        $modelName = Security_System::getInstance()->getOption('activeModel');
+        $modelName = Security_System::getInstance()->getOption('activeModelName');
         
         if (class_exists($modelName)) {
             
@@ -163,7 +170,7 @@ final class Security_System
     
     public function isEnabled($name = 'system')
     {
-        if ($this->isInstalled() && $this->_enabled['system']) {
+        if ($this->_enabled['system']) {
             
             if (array_key_exists($name, $this->_enabled)) {
                 

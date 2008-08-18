@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <options>
-    <activeModelName>WebUser</activeModelName>
+    <activeModelName>Security_Account</activeModelName>
     <accountTableName>User</accountTableName>
     <identityColumnName>user_email</identityColumnName>
     <identityColumnTitle>Email Address</identityColumnTitle>
@@ -8,5 +8,7 @@
     <credentialColumnTitle>Password</credentialColumnTitle>
     <credentialColumnTreatment>md5(?)</credentialColumnTreatment>
     <useSecurityErrorController>1</useSecurityErrorController>
-    <getDbOptions>1</getDbOptions>
+    <acl_enabled>1</acl_enabled>
+    <system_enabled>1</system_enabled>
+    <getDbOptions>0</getDbOptions>
 </options>
