@@ -6,7 +6,7 @@ class Security_Form_Group extends Zend_Form
     {
         $this->addElement('hidden', '_method');
         
-        $groupForm = new Zend_Form_Subform(array('legend' => 'Group'));
+        $groupForm = new Zend_Form_SubForm(array('legend' => 'Group'));
 
         $groupForm->addElement('text', 'name', array(
             'validators'    =>  array(
@@ -21,7 +21,7 @@ class Security_Form_Group extends Zend_Form
         
         $this->addSubForm($groupForm, 'group');
         
-        $privilegesForm = new Zend_Form_Subform(array('legend' => 'Privileges'));
+        $privilegesForm = new Zend_Form_SubForm(array('legend' => 'Privileges'));
 					
         if ($acls = Security_Acl::getInstance()->getAcl()) {
             
@@ -29,7 +29,7 @@ class Security_Form_Group extends Zend_Form
                 
                 if (!$privilegesForm->getSubForm('module_'.$acl->Module->id)) {
                     
-                    $privilegesForm->addSubForm(new Zend_Form_Subform(array('legend' => $acl->Module->name)), 'module_'.$acl->Module->id);
+                    $privilegesForm->addSubForm(new Zend_Form_SubForm(array('legend' => $acl->Module->name)), 'module_'.$acl->Module->id);
                 }
                 
                 if (!$privilegesForm->getSubForm('module_'.$acl->Module->id)->getElement('resource_'.$acl->Resource->id)) {

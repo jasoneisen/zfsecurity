@@ -4,7 +4,7 @@ class Security_Form_Install extends Zend_Form
 {
     public function init()
     {
-        //$intro = new Zend_Form_Subform();
+        //$intro = new Zend_Form_SubForm();
         //
         //$introText = "Welcome to the security module installer.  
         //              Before this module can work, you will need to do a few things to your app.  
