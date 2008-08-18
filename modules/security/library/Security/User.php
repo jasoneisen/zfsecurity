@@ -13,22 +13,21 @@ class Security_User
     {
         if (($auth = Zend_Auth::getInstance()->getIdentity()) && isset($auth->{$this->getIdentityColumn()})) {
             
-            if ($record = Doctrine::getTable($this->getTableName())->find($auth->{$this->getIdentityColumn()})) {}
+            $query = Doctrine_Query::create()
+                                     ->from($this->getTableName())
+                                     ->leftJoin($this->getTableName().'.Groups g');
+                                     ->addWhere($this->getTableName() .'.'. $this->getIdentityColumn() .'= ?');
             
-            if ($record !== false) {
+            if ($record = $query->fetchOne(array($auth->{$this->getIdentityColumn()})) {
                 
                 foreach ($record as $key => $value) {
                 
                     $this->_setVar($key, $value);
                 }
                 
-                // @TODO remove this, we need multiple groups
-                
                 $this->_setRecord($this->getTableName(), $record);
+                $this->_setRecord('Groups', $record->Groups);
             }
-        } else {
-            
-            // @TODO set to anonymous
         }
     }
     

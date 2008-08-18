@@ -38,36 +38,36 @@ final class Security_System
             set_include_path($paths . PATH_SEPARATOR . get_include_path());
         }
         
-        if (!Zend_Loader::isReadable($this->_dirs['configs'] . '/options.xml')) {
-            
-            try {
-                
-                if ($options = Doctrine::getTable('SecurityOption')->findAll()) {
-                    
-                    foreach ($options as $option) {
-
-                        if (!strstr($option->tag, '_enabled')) {
-
-                            $this->setOption($option->tag, $option->value);
-                        } else {
-
-                            list($tag) = explode('_', $option->tag, 2);
-                            $this->setEnabled($tag, $option->value);
-                        }   
-                    }
-                    
-                    $this->_installed = true;
-                }
-            
-            } catch (Doctrine_Connection_Exception $e) {}
-            
-        } else {
+        if (Zend_Loader::isReadable($this->_dirs['configs'] . '/options.xml')) {
             
             $options = simplexml_load_file($this->_dirs['configs'] . '/options.xml');
             
             foreach ($options as $name => $value) {
                 
                 $this->setOption($name, (string) $value);
+            }
+            
+            if ($this->getOption('getDbOptions')) {
+                
+                try {
+                    
+                    if ($options = Doctrine::getTable('SecurityOption')->findAll()) {
+                        
+                        foreach ($options as $option) {
+                
+                            if (!strstr($option->tag, '_enabled')) {
+                
+                                $this->setOption($option->tag, $option->value);
+                            } else {
+                
+                                list($tag) = explode('_', $option->tag, 2);
+                                $this->setEnabled($tag, $option->value);
+                            }   
+                        }
+                        
+                        $this->_installed = true;
+                    }
+                } catch (Doctrine_Connection_Exception $e) {}
             }
         }
 
@@ -118,8 +118,10 @@ final class Security_System
         return null;
     }
     
-    public static function getAccountInstance() {
+    public static function getActiveModel() {
+        
         $modelName = Security_System::getInstance()->getOption('activeModel');
+        
         if (class_exists($modelName)) {
             
             if ($model = call_user_func($modelName.'::getInstance')) {
@@ -152,7 +154,9 @@ final class Security_System
     public function isEnabled($name = 'system')
     {
         if ($this->isInstalled() && $this->_enabled['system']) {
+            
             if (array_key_exists($name, $this->_enabled)) {
+                
                 return $this->_enabled[$name];
             }
         }
