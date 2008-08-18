@@ -1,27 +1,16 @@
 <?php
 
-if (!$tableName = Security_System::getInstance()->getOption('accountTable')) {
+$tableName = $this->getOption('accountTable');
+$accountTable = Doctrine::getTable($tableName);
+$accountIdentifier = $accountTable->getIdentifier();
 
-    throw new Security_Exception('You must create an object that extends Security_User to use the Security module');
-}
-
-if (!$columns = Doctrine::getTable($tableName)->getColumns()) {
-
-    throw new Security_Exception('Security module could not get column definitions for table \''.$tableName.'\'');
-}
-
-if (!$identifier = Doctrine::getTable($tableName)->getIdentifier()) {
-
-    throw new Security_Exception('No primary key definition for table \''.$tableName.'\'');
-}
-
-if (is_array($identifier)) {
+if (is_array($accountIdentifier)) {
 
     throw new Security_Exception('Primary key definition for table \''.$tableName.'\' cannot be composite');
 }
 
-$local = ($identifier == 'id') ? strtolower($tableName) .'_id' : $identifier;
-$column = $columns[$identifier];
+$local = ($accountIdentifier == 'id') ? strtolower($tableName) .'_id' : $accountIdentifier;
+$column = $accountTable->getColumnDefinition($accountIdentifier);
 
 eval('
 class Group'.$tableName.' extends Doctrine_Record
@@ -43,6 +32,9 @@ class Group'.$tableName.' extends Doctrine_Record
             \'notnull\'       =>  '.(!empty($column['notnull']) ? 'true' : 'false').',
             \'autoincrement\' =>  false));
         
+        $this->option(\'collate\', \''.$accountTable->getOption('collate').'\');
+        $this->option(\'charset\', \''.$accountTable->getOption('charset').'\');
+        $this->option(\'type\', \''.$accountTable->getOption('type').'\');
     }
 
     public function setUp()
@@ -57,7 +49,7 @@ class Group'.$tableName.' extends Doctrine_Record
 
         $this->hasOne(\''.$tableName.'\', array(
             \'local\'     =>  \''.$local.'\',
-            \'foreign\'   =>  \''.$identifier.'\',
+            \'foreign\'   =>  \''.$accountIdentifier.'\',
             \'onDelete\'  =>  \'CASCADE\',
             \'onUpdate\'  =>  \'CASCADE\'));
     }
