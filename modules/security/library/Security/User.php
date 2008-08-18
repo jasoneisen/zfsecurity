@@ -15,10 +15,10 @@ class Security_User
             
             $query = Doctrine_Query::create()
                                      ->from($this->getTableName())
-                                     ->leftJoin($this->getTableName().'.Groups g');
+                                     ->leftJoin($this->getTableName().'.Groups g')
                                      ->addWhere($this->getTableName() .'.'. $this->getIdentityColumn() .'= ?');
             
-            if ($record = $query->fetchOne(array($auth->{$this->getIdentityColumn()})) {
+            if ($record = $query->fetchOne(array($auth->{$this->getIdentityColumn()}))) {
                 
                 foreach ($record as $key => $value) {
                 

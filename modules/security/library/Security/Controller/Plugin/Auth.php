@@ -17,31 +17,37 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		
 		if (!$groups = $security->getActiveModel()->getRecord('Groups')) {
 		    
-		    $groups[] = array('name' => 'Anonymous');
+		    $groups[] = (object) array('name' => 'Anonymous');
 		}
-		die();
+		
 		$acl = Security_Acl::getInstance();
+		
+		foreach ($groups as $group) {
         
-		try {
-			
-			if (!$acl->hasRole($role->name)) {
-       		    throw new Exception("The requested user role '".$role->name."' does not exist");									
-       		}
-       		if (!$acl->has($request->getModuleName().'_'.$request->getControllerName())) {
-				throw new Exception("The requested controller '".$request->getControllerName()."' does not exist as an ACL resource");
- 			}
-			if (!$acl->isAllowed($role->name, $request->getModuleName().'_'.$request->getControllerName(), $request->getActionName())) {
-				throw new Exception("The page you requested does not exist or you do not have access");
-			}
-			
-		} catch (Exception $e) {
-			
-			if (!$security->getOption('useSecurityErrorController')) {
-				throw new Security_Acl_Exception($e->getMessage());
-			}
-			
-			$error = $e->getMessage();
-		}
+		    try {
+		    	
+		    	if (!$acl->hasRole($group->name)) {
+       	    	    throw new Exception("The requested user role '".$group->name."' does not exist");									
+       	    	}
+       	    	if (!$acl->has($request->getModuleName().'_'.$request->getControllerName())) {
+		    		throw new Exception("The requested controller '".$request->getControllerName()."' does not exist as an ACL resource");
+ 		    	}
+		    	if (!$acl->isAllowed($group->name, $request->getModuleName().'_'.$request->getControllerName(), $request->getActionName())) {
+		    		throw new Exception("The page you requested does not exist or you do not have access");
+		    	}
+		    	
+		    	return;
+		    	
+		    } catch (Exception $e) {
+		    	
+		    	if (!$security->getOption('useSecurityErrorController')) {
+		    		throw new Security_Acl_Exception($e->getMessage());
+		    	}
+		    	
+		    	$error = $e->getMessage();
+		    }
+		    
+	    }
         
 		if (isset($error)) {
 			
