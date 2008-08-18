@@ -38,19 +38,16 @@ class Security_IndexController extends Security_Controller_Action_Backend
 				
 				$subform = new Zend_Form_SubForm();
 				
-				$element = new Zend_Form_Element_Text($option->tag, array('size'=>'10'));
-				$element->addFilter('StringTrim');
-				$element->setLabel($option->description);
+				$form->addElement('text', $option->tag, array(
+				    'filters' => array('StringTrim'),
+				    'size'=>'10',
+				    'label' => $option->description));
 				
 				if (!$this->getRequest()->isPost()) {
-					$element->setValue($option->value);
+					$form->getElement($option->tag)->setValue($option->value);
 				}
-				
-				$subform->addElement($element);
-				$subform->setLegend($option->name);
         
-				//$subform->addDisplayGroup(array($option->tag), 'options', array('legend'=>$option->name));
-				$form->addSubform($subform, $option->tag);
+				$form->addDisplayGroup(array($option->tag), 'group_'.$option->tag, array('legend'=>$option->name));
 			}
 		} else {
 			
@@ -66,7 +63,7 @@ class Security_IndexController extends Security_Controller_Action_Backend
 	{
 		$form = $this->_getForm();
 		$post = $form->getValues();
-
+        
 		$options = Doctrine::getTable('SecurityOption')->findAll();
 
 		try {
@@ -74,7 +71,7 @@ class Security_IndexController extends Security_Controller_Action_Backend
 			Doctrine_Manager::connection()->beginTransaction();
 
 			foreach ($options as $option) {
-				$option->value = $post[$option->tag][$option->tag];
+				$option->value = $post[$option->tag];
 				$option->save();
 			}
 			
