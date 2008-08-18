@@ -54,7 +54,7 @@ class Security_InstallController extends Security_Controller_Action_Backend
 	        $conn->exec("INSERT INTO `security_option` VALUES ('acl_enabled', 'ACL System', '0', 'Enables/Disables ACL')");
             $conn->exec("INSERT INTO `security_option` VALUES ('system_enabled', 'Security System', '0', 'Enables/Disables the entire system.  This overrides all other enabled values.')");
             $conn->exec("INSERT INTO `security_option` VALUES ('useSecurityErrorController', 'Security Error Controller', '1', 'Enables/Disables the use of the Security module''s error controller for security restrictions.')");
-            $conn->exec("INSERT INTO `security_option` VALUES ('activeModelName', 'Active Model Name', 'ActiveUser', 'The name of the model used with your online user.')");
+            $conn->exec("INSERT INTO `security_option` VALUES ('activeModelName', 'Active Model Name', 'Security_User', 'The name of the model used with your online user.')");
             $conn->exec("INSERT INTO `security_option` VALUES ('accountTableName', 'Account Table Name', 'User', 'Database table where your accounts are stored.')");
             $conn->exec("INSERT INTO `security_option` VALUES ('identityColumnName', 'Identity Column Name', 'user_email', 'Doctrine aliased column name for identity column. Used to authorize logins.')");
             $conn->exec("INSERT INTO `security_option` VALUES ('identityColumnTitle', 'Identity Column Title', 'Email Address', 'Title to give the identity column.  For use in forms/views.')");
