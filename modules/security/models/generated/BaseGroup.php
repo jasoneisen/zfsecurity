@@ -43,7 +43,7 @@ abstract class BaseGroup extends Doctrine_Record
 		
 		if ($singular = Security_System::getInstance()->getOption('accountTableName')) {
 
-		    $plural = Doctrine_Inflector::pluralize($singular);
+		    $plural = $singular . 's';
 		    
 		    if ($singular == $plural) {
 		         $plural .= "s";
