@@ -46,7 +46,7 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		    if (!Security_System::getActiveModel()->isLoggedIn()) {
 		        
 		        $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector');
-		        $redirector->gotoRouteAndExit(array(), 'new_session_path', true);
+		        $redirector->gotoRouteAndExit(array(), 'new_security_session_path', true);
 
 		    } else {
 		    

@@ -17,7 +17,7 @@ class Security_SessionsController extends Security_Controller_Action_Backend
             }
             
             if (($actionName == 'delete' || $actionName == 'destroy') && !Security_System::getActiveModel()->isLoggedIn()) {
-                $this->getHelper('Redirector')->gotoRoute(array(), 'new_session_path', true);
+                $this->getHelper('Redirector')->gotoRoute(array(), 'new_security_session_path', true);
             }
         }
     }
@@ -105,7 +105,7 @@ class Security_SessionsController extends Security_Controller_Action_Backend
     {
         Zend_Auth::getInstance()->clearIdentity();
 		Zend_Session::destroy();
-        $this->getHelper('Redirector')->gotoRoute(array(), 'new_session_path', true);
+        $this->getHelper('Redirector')->gotoRoute(array(), 'new_security_session_path', true);
     }
     
     protected function _generateForm()

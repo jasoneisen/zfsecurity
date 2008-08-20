@@ -33,7 +33,7 @@ class Security_GroupsController extends Security_Controller_Action_Backend
         
             if ($group = $this->_saveGroup($form->getValues())) {
             
-                $this->getHelper('Redirector')->gotoRoute(array('id'=>current($group->identifier())), 'group_path');
+                $this->getHelper('Redirector')->gotoRoute(array('id'=>current($group->identifier())), 'security_group_path');
             }
         }
         
@@ -54,7 +54,7 @@ class Security_GroupsController extends Security_Controller_Action_Backend
         
             if ($group = $this->_saveGroup($form->getValues(), $this->getRequest()->getParam('id'))) {
             
-                $this->getHelper('Redirector')->gotoRoute(array('id'=>current($group->identifier())), 'group_path');
+                $this->getHelper('Redirector')->gotoRoute(array('id'=>current($group->identifier())), 'security_group_path');
             }
         }
         

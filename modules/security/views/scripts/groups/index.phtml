@@ -7,9 +7,9 @@
 	<?php foreach($this->groups as $group): ?>
 	<tr>
 		<th><?php echo $group; ?></th>
-		<td><a href="<?php echo $this->Url(array('id'=>current($group->identifier())), 'group_path')?>" title=""><img src="<?php echo $this->baseUrl('interface/search.png'); ?>" alt="View" /></a></td>
-		<td><a href="<?php echo $this->Url(array('id'=>current($group->identifier())), 'edit_group_path')?>"><img src="<?php echo $this->baseUrl('interface/modify.png'); ?>" alt="Edit"></a></td>
-		<td><a href="<?php echo $this->Url(array('id'=>current($group->identifier())), 'delete_group_path')?>"><img src="<?php echo $this->baseUrl('interface/delete.png'); ?>" alt="Delete"></a></td>
+		<td><a href="<?php echo $this->Url(array('id'=>current($group->identifier())), 'security_group_path')?>" title=""><img src="<?php echo $this->baseUrl('interface/search.png'); ?>" alt="View" /></a></td>
+		<td><a href="<?php echo $this->Url(array('id'=>current($group->identifier())), 'edit_security_group_path')?>"><img src="<?php echo $this->baseUrl('interface/modify.png'); ?>" alt="Edit"></a></td>
+		<td><a href="<?php echo $this->Url(array('id'=>current($group->identifier())), 'delete_security_group_path')?>"><img src="<?php echo $this->baseUrl('interface/delete.png'); ?>" alt="Delete"></a></td>
 	</tr>
 	<?php endforeach; ?>
 	<?php else: ?>
@@ -18,6 +18,6 @@
     </tr>
     <?php endif; ?>
 	<tr class="foot">
-		<td class="first" colspan="3">Add a New group</td><td><a href="<?php echo $this->Url(array(), 'new_group_path'); ?>"><img src="<?php echo $this->baseUrl('interface/add.png'); ?>" alt="+" /></a></td>
+		<td class="first" colspan="3">Add a New group</td><td><a href="<?php echo $this->Url(array(), 'new_security_group_path'); ?>"><img src="<?php echo $this->baseUrl('interface/add.png'); ?>" alt="+" /></a></td>
 	</tr>
 </table>

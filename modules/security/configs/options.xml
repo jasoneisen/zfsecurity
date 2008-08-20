@@ -7,6 +7,9 @@
     <credentialColumnName>user_password</credentialColumnName>
     <credentialColumnTitle>Password</credentialColumnTitle>
     <credentialColumnTreatment>md5(?)</credentialColumnTreatment>
+    <accountIdentityColumn>user_email</accountIdentityColumn>
+    <accountCredentialColumn>user_password</accountCredentialColumn>
+    <accountCredentialTreatment>md5(?)</accountCredentialTreatment>
     <useSecurityErrorController>1</useSecurityErrorController>
     <acl_enabled>1</acl_enabled>
     <system_enabled>1</system_enabled>
