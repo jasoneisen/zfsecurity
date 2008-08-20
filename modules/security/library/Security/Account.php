@@ -1,6 +1,6 @@
 <?php
 
-class Security_Account
+abstract class Security_Account
 {
     protected static $_instance = null;
 
@@ -9,7 +9,7 @@ class Security_Account
     private function __clone()
     {}
 
-    private function __construct()
+    protected function __construct()
     {
         $tableName = Security_System::getInstance()->getOption('accountTableName');
         $columnName = Doctrine::getTable($tableName)->getIdentifier();
@@ -34,13 +34,7 @@ class Security_Account
         }
     }
     
-    public static function getInstance()
-	{
-		if (null === self::$_instance) {
-			self::$_instance = new self();
-		}
-		return self::$_instance;
-	}
+    abstract public static function getInstance();
     
     public function isLoggedIn()
     {
@@ -78,7 +72,7 @@ class Security_Account
     public function __call($method, $args)
     {
         if (method_exists($this->getActiveRecord(), $method)) {
-            return call_user_func_array(array($this->_activeRecord, $method), $args);
+            return call_user_func_array(array($this->getActiveRecord(), $method), $args);
         }
         throw new Security_Exception(sprintf('Invalid method "%s" called in %s', $method, get_class($this->_activeRecord)));
     }
