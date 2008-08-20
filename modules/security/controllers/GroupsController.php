@@ -12,6 +12,7 @@ class Security_GroupsController extends Security_Controller_Action_Backend
 	   $this->view->groups = Doctrine_Query::create()
 	                                        ->select('g.id, g.name')
 	                                        ->from('Group g')
+	                                        ->orderby('g.name')
 	                                        ->execute();
 	}
     

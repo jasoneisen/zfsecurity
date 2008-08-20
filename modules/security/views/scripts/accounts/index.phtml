@@ -1,0 +1,19 @@
+<h2>Account List</h2>
+<?php if ($this->accounts->count()): ?>
+<table>
+    <tr>
+        <th><?php echo $this->columnTitle; ?></th>
+        <th colspan="2">Options</th>
+    </tr>
+<?php foreach ($this->accounts as $account): ?>
+    <tr>
+        <td><?php echo $account->{$this->columnName}; ?></td>
+        <td><a href="<?php echo $this->Url(array('id'=>current($account->identifier())), 'edit_security_account_path'); ?>">Edit</a></td>
+        <td><a href="<?php echo $this->Url(array('id'=>current($account->identifier())), 'delete_security_account_path'); ?>">Delete</a></td>
+    </tr>
+<?php endforeach; ?>
+</table>
+<?php else: ?>
+<p>There are no accounts in the database.</p>
+<?php endif; ?>
+<p><a href="<?php echo $this->Url(array(), 'new_security_account_path'); ?>">Create a new account</a></p>

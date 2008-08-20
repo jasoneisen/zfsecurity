@@ -56,9 +56,18 @@ class Security_Acl extends Zend_Acl
 		    $this->add(new Zend_Acl_Resource('security_error'));
 		}
 		
+		if (!$this->has('security_sessions')) {
+		    $this->add(new Zend_Acl_Resource('security_sessions'));
+		}
+		
 		if (!$this->has('default_error')) {
 		    $this->add(new Zend_Acl_Resource('default_error'));
 		}
+		
+		if (!$this->hasRole('Anonymous')) {
+            $this->addRole(new Zend_Acl_Role('Anonymous'));
+            $this->allow('Anonymous', 'security_sessions', array('new','create'));
+        }
 		
         $this->allow(null, 'security_error');
         $this->allow(null, 'default_error');
