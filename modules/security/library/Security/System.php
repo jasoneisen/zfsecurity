@@ -84,7 +84,7 @@ final class Security_System
         }
 
         if (Zend_Loader::isReadable('Security/Account/GroupLink.php')) {
-            require_once 'Security/Account/GroupLink.php';
+            //require_once 'Security/Account/GroupLink.php';
         }
     }
     
