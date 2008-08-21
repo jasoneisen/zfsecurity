@@ -126,7 +126,7 @@ class Security_AccountsController extends Security_Controller_Action_Backend
                                  ->set('a.'. $identityColumnName, '?', $data['account']['identity'])
                                  ->addWhere('a.'. $accountIdentifier .' = ?', current($account->identifier()));
         
-        if (isset($account->{$credentialColumnName})) {
+        if (!empty($data['account']['credential'])) {
             
             if ($treatment = $this->_getOption('accountCredentialTreatment')) {
                 

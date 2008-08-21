@@ -4,12 +4,37 @@ class Security_InstallController extends Security_Controller_Action_Backend
 {
     protected $_parts = array();
     
+    public function init()
+    {
+        try {
+            
+            $secSys = Security_System::getInstance();
+            
+            Doctrine::getTable('Acl');
+            Doctrine::getTable('AclPart');
+            Doctrine::getTable('Group');
+            Doctrine::getTable('GroupAcl');
+            Doctrine::getTable('SecurityOption');
+            
+            $name = $secSys->getParam('accountTableName');
+            Doctrine::getTable('Group'.$name);
+            
+        } catch (Security_Exception $e) {
+            
+            // Improper bootstrap/include path
+            $this->getHelper('Redirector')->gotoRoute(array('action'=>'setup'));
+        } catch (Exception $e) {
+            
+        }
+    }
+    
+    public function setupAction()
+    {
+        
+    }
+    
     public function indexAction()
     {
-       if (Security_System::getInstance()->isInstalled()) {
-           //$this->_redirect('/security');
-       }
-       
        $form = $this->_getForm();
        
        if ($this->getRequest()->isPost()) {
@@ -29,8 +54,15 @@ class Security_InstallController extends Security_Controller_Action_Backend
        $this->view->form = new Security_Form_Login();
     }
     
+    public function stepOneAction()
+    {
+        
+    }
+    
     public function testAction()
     {
+        
+        
         $bldr = new Doctrine_Import_Builder();
         
         $definition = array(
@@ -52,46 +84,43 @@ class Security_InstallController extends Security_Controller_Action_Backend
                     'type'              =>  'integer',
                     'length'            =>  4),
                 ),
+            'relations'     =>  array(
+                array(
+                    'class'         =>  'Group',
+                    'alias'         =>  'Groups',
+                    'type'          =>  Doctrine_Relation::ONE,
+                    'local'         =>  'group_id',
+                    'foreign'       =>  'id',
+                    'onDelete'      =>  'CASCADE',
+                    'onUpdate'      =>  'CASCADE'),
+                array(
+                    'class'         =>  'User',
+                    'alias'         =>  'Users',
+                    'type'          =>  Doctrine_Relation::ONE,
+                    'local'         =>  'user_id',
+                    'foreign'       =>  'user_id',
+                    'onDelete'      =>  'CASCADE',
+                    'onUpdate'      =>  'CASCADE')),
             'options'       =>  array(
-                //'name'      =>  'GroupUser',
-                //'tableName' =>  'security_group_user',
-                //'inheritanceMap'    =>  array(),
-                //'enumMap'   =>  array(),
-                //'type'      =>  '',
-                //'charset'   =>  '',
-                //'collation' =>  '',
-                //'treeImpl'  =>  '',
-                //'treeOptions'   =>  array(),
-                //'indexes'   =>  '',
-                //'parents'   =>  '',
-                //'joinedParents' =>  '',
-                //'queryParts'    =>  '',
-                //'versioning'    =>  '',
-                //'subclasses'    =>  array(),
-                //'declaringClass'    =>  array('name' => 'Doctrine_Record_Abstract'),
-                'foreignKeys'   =>  array(
-                    array(
-                        'local'     =>  'group_id',
-                        'foreign'   =>  'id',
-                        'foreignTable'  =>  'security_group',
-                        'onDelete'  =>  'CASCADE',
-                        'onUpdate'  =>  'CASCADE'),
-                    array(
-                        'local'     =>  'user_id',
-                        'foreign'   =>  'id',
-                        'foreignTable'  =>  'user',
-                        'onDelete'  =>  'CASCADE',
-                        'onUpdate'  =>  'CASCADE')),
-                'primary'   =>  array('group_id', 'user_id')
+                'type'      =>  '',
+                'charset'   =>  '',
+                'collation' =>  '',
+                'collate'   =>  ''
             ),
         );
         
+        // Outputs what would normally go in Base*.php
         $gen = $bldr->buildDefinition($definition);
+        
         eval($gen);
+        
+        
+        
         Doctrine::getTable('User')->getRecordInstance()->hasMany('Group as Groups', array(
 			'local'		=>	'user_id',
 			'foreign'	=>	'group_id',
 			'refClass'	=>	'GroupUser'));
+        
         //die($gen);
         //eval("class GroupUser extends Doctrine_Record {}");
         //
@@ -129,10 +158,26 @@ class Security_InstallController extends Security_Controller_Action_Backend
         //Doctrine::getTable('GroupUser')->initDefinition();
         //print_r(Doctrine::getTable('GroupUser')->getIdentifier());
         //die();
-        $user = Doctrine::getTable('User')->find(1);
+        $u = Doctrine::getTable('User')->findOneByUserId(1);
+        $u->loadReference('Groups');
+        die(print_r($u->toArray(true)));
         
-        print_r($user->identifier());
-        print_r($user->Groups->toArray());
+        echo "getTable:\n";
+        $gu = Doctrine::getTable('GroupUser')->findOneByUserId(1);
+        $gu->loadReference('Groups');
+        $gu->loadReference('Users');
+        print_r($gu->identifier());
+        print_r($gu->toArray());
+        die();
+        echo "Doctrine_Query:\n";
+        $gu = Doctrine_Query::create()->from('GroupUser')->addWhere('GroupUser.user_id = ?')->fetchOne(array(1));
+        print_r($gu->identifier());
+        
+        echo "new GroupUser():\n";
+        $gu = new GroupUser();
+        
+        //print_r($user->identifier());
+        //print_r($user->Groups->toArray());
         
         //die(print_r($groupUser->getReferences()));
         
