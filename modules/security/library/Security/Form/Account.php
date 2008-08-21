@@ -12,19 +12,19 @@ class Security_Form_Account extends Security_Form_Rest
             'filters' => array(
                 'StringTrim'),
             'required' => true,
-            'label' => Security_System::getInstance()->getOption('identityColumnTitle') .':'));
+            'label' => Security_System::getInstance()->getParam('identityColumnTitle') .':'));
         
         $accountForm->addElement('password', 'credential', array(
             'filters' => array(
                 'StringTrim'),
             'required' => false,
-            'label' => Security_System::getInstance()->getOption('credentialColumnTitle') .':'));
+            'label' => Security_System::getInstance()->getParam('credentialColumnTitle') .':'));
         
         $accountForm->addElement('password', 'credential_confirm', array(
             'filters' => array(
                 'StringTrim'),
             'required' => false,
-            'label' => 'Confirm '. Security_System::getInstance()->getOption('credentialColumnTitle') .':'));
+            'label' => 'Confirm '. Security_System::getInstance()->getParam('credentialColumnTitle') .':'));
         
         $this->addSubForm($accountForm, 'account');
         

@@ -13,13 +13,13 @@ class Security_Form_Login extends Security_Form_Rest
             'filters' => array(
                 'StringTrim'),
             'required' => true,
-            'label' => Security_System::getInstance()->getOption('identityColumnTitle') .':'));
+            'label' => Security_System::getInstance()->getParam('identityColumnTitle') .':'));
         
         $this->addElement('password', 'credential', array(
             'filters' => array(
                 'StringTrim'),
             'required' => true,
-            'label' => Security_System::getInstance()->getOption('credentialColumnTitle') .':'));
+            'label' => Security_System::getInstance()->getParam('credentialColumnTitle') .':'));
         
         $this->addElement('submit', 'submit', array('label' => 'Submit'));
     }

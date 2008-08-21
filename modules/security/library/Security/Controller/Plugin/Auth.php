@@ -44,13 +44,13 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		if (isset($error)) {
 		    
 		    if (!Security_System::getActiveModel()->isLoggedIn()) {
-		        
+		        //die(print_r(Zend_Controller_Front::getInstance()->getRouter()->getRoutes()));
 		        $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector');
 		        $redirector->gotoRouteAndExit(array(), 'new_security_session_path', true);
 
 		    } else {
 		    
-		        $module = $secSys->getOption('useSecurityErrorController') ? 'security' : 'default';
+		        $module = $secSys->getParam('useSecurityErrorController') ? 'security' : 'default';
 		            
 			    $request->setModuleName($module);
 			    $request->setControllerName('error');

@@ -15,7 +15,7 @@ abstract class Security_Controller_Action_Backend extends Zend_Controller_Action
     
     protected function _getOption($name) {
         
-        return Security_System::getInstance()->getOption($name);
+        return Security_System::getInstance()->getParam($name);
     }
     
     public function init()
