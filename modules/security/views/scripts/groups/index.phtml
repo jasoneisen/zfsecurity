@@ -1,23 +1,20 @@
+<h2>Group List</h2>
+<?php if ($this->groups->count()): ?>
 <table>
 	<tr class="head">
 		<th class="first">Group Name</th>
-		<th colspan="3">Actions</th>
+		<th colspan="3">Options</th>
 	</tr>
-	<?php if ($this->groups && $this->groups->count()): ?>
 	<?php foreach($this->groups as $group): ?>
 	<tr>
-		<th><?php echo $group; ?></th>
-		<td><a href="<?php echo $this->Url(array('id'=>current($group->identifier())), 'security_group_path')?>" title=""><img src="<?php echo $this->baseUrl('interface/search.png'); ?>" alt="View" /></a></td>
-		<td><a href="<?php echo $this->Url(array('id'=>current($group->identifier())), 'edit_security_group_path')?>"><img src="<?php echo $this->baseUrl('interface/modify.png'); ?>" alt="Edit"></a></td>
-		<td><a href="<?php echo $this->Url(array('id'=>current($group->identifier())), 'delete_security_group_path')?>"><img src="<?php echo $this->baseUrl('interface/delete.png'); ?>" alt="Delete"></a></td>
+		<th><?php echo $group->name; ?></th>
+		<td><a href="<?php echo $this->Url(array('id'=>current($group->identifier())), 'security_group_path')?>">View</a></td>
+		<td><a href="<?php echo $this->Url(array('id'=>current($group->identifier())), 'edit_security_group_path')?>">Edit</td>
+		<td><a href="<?php echo $this->Url(array('id'=>current($group->identifier())), 'delete_security_group_path')?>">Delete</a></td>
 	</tr>
 	<?php endforeach; ?>
-	<?php else: ?>
-    <tr>
-        <td colspan="4">There are currently no groups in the database</td>
-    </tr>
-    <?php endif; ?>
-	<tr class="foot">
-		<td class="first" colspan="3">Add a New group</td><td><a href="<?php echo $this->Url(array(), 'new_security_group_path'); ?>"><img src="<?php echo $this->baseUrl('interface/add.png'); ?>" alt="+" /></a></td>
-	</tr>
 </table>
+<?php else: ?>
+<p>There are currently no groups in the database</p>
+<?php endif; ?>
+<p><a href="<?php echo $this->Url(array(), 'new_security_group_path'); ?>">Create a new group</a></p>

@@ -2,11 +2,6 @@
 
 class Security_GroupsController extends Security_Controller_Action_Backend
 {
-    public function init()
-    {
-        
-    }
-    
 	public function indexAction()
 	{
 	   $this->view->groups = Doctrine_Query::create()
@@ -18,7 +13,8 @@ class Security_GroupsController extends Security_Controller_Action_Backend
     
     public function showAction()
     {
-       $this->view->group = $this->_getGroup($this->getRequest()->getParam('id'));
+       //$this->view->group = $this->_getGroup($this->getRequest()->getParam('id'));
+       $this->getHelper('Redirector')->gotoRoute(array(), 'security_groups_path');
     }
     
     public function newAction()

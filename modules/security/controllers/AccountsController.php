@@ -4,15 +4,16 @@ class Security_AccountsController extends Security_Controller_Action_Backend
 {
     public function init()
     {
-        $this->view->columnTitle = $this->_getOption('identityColumnTitle');
-        $this->view->columnName = $this->_getOption('identityColumnName');
+        parent::init();
+        $this->view->columnTitle = $this->_secParam('identityColumnTitle');
+        $this->view->columnName = $this->_secParam('identityColumnName');
     }
     
     public function indexAction()
     {
         $this->view->accounts = Doctrine_Query::create()
-                                                ->from($this->_getOption('accountTableName') .' a')
-                                                ->orderby('a.'.$this->_getOption('identityColumnName'))
+                                                ->from($this->_secParam('accountTableName') .' a')
+                                                ->orderby('a.'.$this->_secParam('identityColumnName'))
                                                 ->execute();
     }
     
@@ -70,8 +71,8 @@ class Security_AccountsController extends Security_Controller_Action_Backend
     
     protected function _generateForm()
     {
-        $identifier = Doctrine::getTable($this->_getOption('accountTableName'))->getIdentifier();
-        $identityColumn = $this->_getOption('identityColumnName');
+        $identifier = Doctrine::getTable($this->_secParam('accountTableName'))->getIdentifier();
+        $identityColumn = $this->_secParam('identityColumnName');
                                 
         $form = new Security_Form_Account();
         
@@ -99,9 +100,9 @@ class Security_AccountsController extends Security_Controller_Action_Backend
     
     protected function _saveAccount($data, $account = null)
     {
-        $tableName = $this->_getOption('accountTableName');
-        $identityColumnName = $this->_getOption('identityColumnName');
-        $credentialColumnName = $this->_getOption('credentialColumnName');
+        $tableName = $this->_secParam('accountTableName');
+        $identityColumnName = $this->_secParam('identityColumnName');
+        $credentialColumnName = $this->_secParam('credentialColumnName');
         $accountIdentifier = Doctrine::getTable($tableName)->getIdentifier();
         
         $groupLink = 'Group' . $tableName;
@@ -128,7 +129,7 @@ class Security_AccountsController extends Security_Controller_Action_Backend
         
         if (!empty($data['account']['credential'])) {
             
-            if ($treatment = $this->_getOption('accountCredentialTreatment')) {
+            if ($treatment = $this->_secParam('accountCredentialTreatment')) {
                 
                 $query->set('a.'. $credentialColumnName, $treatment, $data['account']['credential']);
             } else {
@@ -151,8 +152,8 @@ class Security_AccountsController extends Security_Controller_Action_Backend
     
     protected function _getAccount($id)
     {
-        $identifier = Doctrine::getTable($this->_getOption('accountTableName'))->getIdentifier();
-        $tableName = $this->_getOption('accountTableName');
+        $identifier = Doctrine::getTable($this->_secParam('accountTableName'))->getIdentifier();
+        $tableName = $this->_secParam('accountTableName');
         
         return Doctrine_Query::create()
                                ->from($tableName .' a')

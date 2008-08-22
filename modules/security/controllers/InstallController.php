@@ -6,6 +6,8 @@ class Security_InstallController extends Security_Controller_Action_Backend
     
     public function init()
     {
+        parent::init();
+        
         try {
             
             $secSys = Security_System::getInstance();
@@ -23,6 +25,7 @@ class Security_InstallController extends Security_Controller_Action_Backend
             
             // Improper bootstrap/include path
             $this->getHelper('Redirector')->gotoRoute(array('action'=>'setup'));
+            
         } catch (Exception $e) {
             
         }
@@ -35,6 +38,10 @@ class Security_InstallController extends Security_Controller_Action_Backend
     
     public function indexAction()
     {
+        $directory = dirname(dirname(__FILE__)) . '/install/migrations';
+        $migration = new Security_Migration($directory);
+        $migration->migrate(1);
+        
        $form = $this->_getForm();
        
        if ($this->getRequest()->isPost()) {
@@ -56,9 +63,33 @@ class Security_InstallController extends Security_Controller_Action_Backend
     
     public function stepOneAction()
     {
-        
+        // User add stuff to bootstrap + check
     }
     
+    public function stepTwoAction()
+    {
+        // Generate Models + check
+    }
+    
+    public function stepThreeAction()
+    {
+        // Check DB privileges
+    }
+    
+    public function stepFourAction()
+    {
+        // Run SQL from Models + check
+    }
+    
+    public function stepFiveAction()
+    {
+        // Scan/Add ACL
+    }
+    
+    public function finishedAction()
+    {
+        // Done!
+    }
     public function testAction()
     {
         
@@ -362,8 +393,10 @@ class Security_InstallController extends Security_Controller_Action_Backend
     
     protected function _aclExists($module, $resource, $privilege)
     {
-        if (!Security_System::getInstance()->isInstalled()) {
-           return false;
+        try {
+            Doctrine::getTable('Acl');
+        } catch (Doctrine_Exception $e) {
+            return;
         }
         // This could be time tested against looping through Security_Acl::getInstance->getAcl()
         return (Doctrine_Query::create()

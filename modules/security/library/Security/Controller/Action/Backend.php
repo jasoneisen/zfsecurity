@@ -13,7 +13,7 @@ abstract class Security_Controller_Action_Backend extends Zend_Controller_Action
      */
     protected $_formNamespace = 'securityFormNamespace';
     
-    protected function _getOption($name) {
+    protected function _secParam($name) {
         
         return Security_System::getInstance()->getParam($name);
     }
