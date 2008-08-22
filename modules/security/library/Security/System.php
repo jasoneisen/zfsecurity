@@ -2,7 +2,11 @@
 
 final class Security_System
 {
+    const ERROR_NO_START_CALLED = 'Cannot get instance before Security_System::start() has been called';
+    
     private static $_instance = null;
+    
+    private $_installed = null;
     
     private $_params =      array('activeModelName'             =>  null,
                                   'accountTableName'            =>  null,
@@ -72,7 +76,7 @@ final class Security_System
     public static function getInstance()
     {
         if (null === self::$_instance) {
-            throw new Security_Exception('Cannot get instance before Security_System::start() has been called');
+            throw new Security_Exception(self::ERROR_NO_START_CALLED);
         }
 
         return self::$_instance;
@@ -210,5 +214,35 @@ final class Security_System
             $this->setParam($name, $value);
         }
         return $this;
+    }
+    
+    public function isInstalled()
+    {
+        if (null === $this->_installed) {
+            
+            if ($table = $this->getParam('accountTableName')) {
+            
+                try {
+                    
+                    $identifier = Doctrine::getTable($table)->getIdentifier();
+                    
+                    $test = Doctrine_Query::create()
+                                            ->select('a.'.$identifier)
+                                            ->from($table.' a')
+                                            ->leftJoin('a.Groups g')
+                                            ->limit(1)
+                                            ->execute();
+                                            
+                    //if ($test instanceof Doctrine_Null || $test->count()) {}
+                    
+                    $this->_installed = true;
+                    
+                } catch (Exception $e) {
+                    
+                    $this->_installed = false;
+                }
+            }
+        }
+        return $this->_installed;
     }
 }

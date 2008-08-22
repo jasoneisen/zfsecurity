@@ -1,0 +1,195 @@
+---
+SecurityAcl: 
+  tableName: security_acl
+  columns: 
+    id: 
+      unsigned: true
+      primary: true
+      notnull: true
+      autoincrement: true
+      type: integer(4)
+    module_id: 
+      unsigned: true
+      primary: false
+      notnull: true
+      autoincrement: false
+      type: integer(4)
+    resource_id: 
+      unsigned: true
+      primary: false
+      notnull: true
+      autoincrement: false
+      type: integer(4)
+    privilege_id: 
+      unsigned: true
+      primary: false
+      notnull: true
+      autoincrement: false
+      type: integer(4)
+  indexes:
+    unique:
+      fields:
+        module_id:
+        resource_id:
+        privilege_id:
+      type: unique
+  relations: 
+    Module: 
+      class: SecurityAclPart
+      local: module_id
+      foreign: id
+      type: one
+    Resource: 
+      class: SecurityAclPart
+      local: resource_id
+      foreign: id
+      type: one
+    Privilege: 
+      class: SecurityAclPart
+      local: privilege_id
+      foreign: id
+      type: one
+    Groups:
+      refClass: SecurityGroupAcl
+      class: SecurityGroup
+      local: acl_id
+      foreign: group_id
+      type: many
+    GroupAcl: 
+      class: SecurityGroupAcl
+      local: id
+      foreign: acl_id
+      type: many
+SecurityAclPart: 
+  tableName: security_acl_part
+  columns: 
+    id: 
+      unsigned: true
+      primary: true
+      notnull: true
+      autoincrement: true
+      type: integer(4)
+    name: 
+      fixed: false
+      primary: false
+      notnull: true
+      autoincrement: false
+      type: string(32)
+  indexes:
+    unique:
+      fields:
+        name:
+      type: unique
+  relations: 
+    Modules: 
+      class: SecurityAcl
+      local: id
+      foreign: module_id
+      type: many
+    Resources: 
+      class: SecurityAcl
+      local: id
+      foreign: resource_id
+      type: many
+    Privileges: 
+      class: SecurityAcl
+      local: id
+      foreign: privilege_id
+      type: many
+SecurityGroup: 
+  tableName: security_group
+  columns: 
+    id: 
+      unsigned: true
+      primary: true
+      notnull: true
+      autoincrement: true
+      type: integer(4)
+    name: 
+      fixed: false
+      primary: false
+      notnull: true
+      autoincrement: false
+      type: string(32)
+    description: 
+      fixed: false
+      primary: false
+      notnull: false
+      autoincrement: false
+      type: string(255)
+  indexes:
+    unique:
+      fields:
+        name:
+      type: unique
+  relations: 
+    Acl: 
+      refClass: SecurityGroupAcl
+      class: SecurityAcl
+      local: group_id
+      foreign: acl_id
+      type: many
+    GroupAcl: 
+      class: SecurityGroupAcl
+      local: id
+      foreign: group_id
+      type: many
+SecurityGroupAcl: 
+  tableName: security_group_acl
+  columns: 
+    group_id: 
+      unsigned: true
+      primary: true
+      notnull: true
+      autoincrement: false
+      type: integer(4)
+    acl_id: 
+      unsigned: true
+      primary: true
+      notnull: true
+      autoincrement: false
+      type: integer(4)
+  relations: 
+    Group: 
+      class: SecurityGroup
+      local: group_id
+      foreign: id
+      type: one
+    Acl: 
+      class: SecurityAcl
+      local: acl_id
+      foreign: id
+      type: one
+SecurityOption: 
+  tableName: security_option
+  columns: 
+    tag: 
+      fixed: false
+      primary: true
+      notnull: true
+      autoincrement: false
+      type: string(64)
+    name: 
+      fixed: false
+      primary: false
+      notnull: true
+      autoincrement: false
+      type: string(64)
+    value: 
+      fixed: false
+      primary: false
+      notnull: true
+      autoincrement: false
+      type: string(255)
+    type:
+        primary: false
+        notnull: true
+        autoincrement: false
+        type: enum
+        values: [bool, number, string, text, date]
+    description: 
+      fixed: false
+      primary: false
+      notnull: false
+      autoincrement: false
+      type: string(255)

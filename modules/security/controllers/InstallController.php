@@ -8,88 +8,133 @@ class Security_InstallController extends Security_Controller_Action_Backend
     {
         parent::init();
         
-        try {
-            
-            $secSys = Security_System::getInstance();
-            
-            Doctrine::getTable('Acl');
-            Doctrine::getTable('AclPart');
-            Doctrine::getTable('Group');
-            Doctrine::getTable('GroupAcl');
-            Doctrine::getTable('SecurityOption');
-            
-            $name = $secSys->getParam('accountTableName');
-            Doctrine::getTable('Group'.$name);
-            
-        } catch (Security_Exception $e) {
-            
-            // Improper bootstrap/include path
-            $this->getHelper('Redirector')->gotoRoute(array('action'=>'setup'));
-            
-        } catch (Exception $e) {
-            
-        }
-    }
-    
-    public function setupAction()
-    {
-        
+        //if (!$this->getRequest()->isPost()) {
+        //    
+        //    try {
+        //        
+        //        if (Security_System::getInstance()->isInstalled()) {
+        //        
+        //            $this->getHelper('Redirector')->gotoRoute(array('module'=>'security','controller'=>'update'), 'default');
+        //        
+        //        }
+        //    } catch (Exception $e) {}
+        //}
     }
     
     public function indexAction()
     {
-        $directory = dirname(dirname(__FILE__)) . '/install/migrations';
-        $migration = new Security_Migration($directory);
-        $migration->migrate(1);
         
-       $form = $this->_getForm();
-       
-       if ($this->getRequest()->isPost()) {
-           
-           if ($this->getRequest()->getPost('submit') != 'Begin') {
-           
-           } else {
-           
-               $subForm = "stepOne";
-           }
-       } else {
-       
-           $subForm = "intro";
-       }
-       
-       //$this->view->form = $form->getSubForm($subForm);
-       $this->view->form = new Security_Form_Login();
     }
     
     public function stepOneAction()
     {
-        // User add stuff to bootstrap + check
+        if ($this->getRequest()->isPost()) {
+            
+            try {
+                $secSys = Security_System::getInstance();
+                $this->_forward('step-two');
+                return;
+
+            } catch (Security_Exception $e) {
+
+                $this->view->error = $e->getMessage();
+            }
+        }
+        $this->view->form = $this->_getForm();
     }
     
     public function stepTwoAction()
     {
-        // Generate Models + check
+        // Check DB privileges
+        $path = dirname(dirname(__FILE__)) . '/data/migrations';
+        
+        $this->view->path = $path;
+        $this->view->form = $this->_getForm();
+        
+        if ($this->getRequest()->isPost()) {
+            
+            $migration = new Security_Migration();
+            
+            if (!Zend_Loader::isReadable($path)) {
+                
+                $errors[] = "Migrations path '$path' is not readable";
+                return;
+            }
+            
+            if (false === ($version = $migration->getCurrentVersion())) {
+                
+                try {
+                    
+                    $migration->
+                }
+            
+            
+
+            
+            
+            if (false === ($version = $migration->getCurrentVersion())) {
+
+                return;
+            }
+            
+            $this->_forward('step-three');
+        }
+        if (!empty($errors)) {
+            $this->view->errors = $errors;
+        }
     }
     
     public function stepThreeAction()
     {
-        // Check DB privileges
+        // Run migration
+        if ($this->getRequest()->isPost()) {
+            
+            try {
+
+                $sa->findAll();
+                $sap->findAll();
+                $sg->findAll();
+                $sga->findAll();
+                $so->findAll();
+
+            } catch (Exception $e) {
+
+                return;
+            }
+            
+            $this->_forward('step-four');
+        }
+        $this->view->form = $this->_getForm();
     }
     
     public function stepFourAction()
     {
-        // Run SQL from Models + check
-    }
-    
-    public function stepFiveAction()
-    {
-        // Scan/Add ACL
+        // Check models
+        if ($this->getRequest()->isPost()) {
+            
+            try{
+
+                $sa = Doctrine::getTable('SecurityAcl');
+                $sap = Doctrine::getTable('SecurityAclPart');
+                $sg = Doctrine::getTable('SecurityGroup');
+                $sga = Doctrine::getTable('SecurityGroupAcl');
+                $so = Doctrine::getTable('SecurityOption');
+
+            } catch (Exception $e) {
+
+                return;
+            }
+            
+            $this->_forward('finished');
+        }
+        $this->view->form = $this->_getForm();
     }
     
     public function finishedAction()
     {
-        // Done!
+        // Done, send to /security/update to update acl list
     }
+    
     public function testAction()
     {
         
@@ -412,6 +457,8 @@ class Security_InstallController extends Security_Controller_Action_Backend
     
     protected function _generateForm()
     {
-       return new Security_Form_Install();
+        $form = new Zend_Form();
+        $form->addElement('submit', 'submit', array('label' => 'Next'));
+        return $form;
     }
 }

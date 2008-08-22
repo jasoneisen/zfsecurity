@@ -2,10 +2,28 @@
 
 class Security_Migration extends Doctrine_Migration
 {
-    public function __construct($directory = null)
+    protected $_migrationTableName = 'security_migration';
+    
+    /**
+     * getCurrentVersion
+     *
+     * Get the current version of the database
+     *
+     * @return int|false on Doctrine_Connection_Exception
+     */
+    public function getCurrentVersion()
     {
-        $this->setTableName('security_migration');
+        $conn = Doctrine_Manager::connection();
         
-        parent::__construct($directory);
+        try {
+            
+            $result = $conn->fetchColumn("SELECT version FROM " . $this->_migrationTableName);
+            
+        } catch (Doctrine_Connection_Exception $e) {
+            
+            return false;
+        }
+        
+        return isset($result[0]) ? $result[0]:0;
     }
 }

@@ -41,19 +41,19 @@ abstract class BaseGroup extends Doctrine_Record
 			'foreign'	=>	'acl_id',
 		    'refClass'  =>  'GroupAcl'));
 		
-		if ($singular = Security_System::getInstance()->getParam('accountTableName')) {
-
-		    $plural = $singular . 's';
-		    
-		    if ($singular == $plural) {
-		         $plural .= "s";
-		    }
-		    
-		    $this->hasMany($singular .' as '. $plural, array(
-			    'local'		=>	'group_id',
-			    'foreign'	=>	Doctrine::getTable($singular)->getIdentifier(),
-		        'refClass'  =>  'Group'.$singular));
-		}
+		//if ($singular = Security_System::getInstance()->getParam('accountTableName')) {
+        //
+		//    $plural = $singular . 's';
+		//    
+		//    if ($singular == $plural) {
+		//         $plural .= "s";
+		//    }
+		//    
+		//    $this->hasMany($singular .' as '. $plural, array(
+		//	    'local'		=>	'group_id',
+		//	    'foreign'	=>	Doctrine::getTable($singular)->getIdentifier(),
+		//        'refClass'  =>  'Group'.$singular));
+		//}
 	}
 
 }
