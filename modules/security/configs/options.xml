@@ -12,6 +12,6 @@
     <accountCredentialTreatment>md5(?)</accountCredentialTreatment>
     <useSecurityErrorController>1</useSecurityErrorController>
     <acl_enabled>1</acl_enabled>
-    <system_enabled>1</system_enabled>
+    <system_enabled>0</system_enabled>
     <getDbOptions>0</getDbOptions>
 </options>

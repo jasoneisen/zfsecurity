@@ -1,3 +1,8 @@
 <h2>Step One</h2>
 <p>Add stuff to your bootstrap</p>
+<?php if (!empty($this->errors)): ?>
+<?php foreach ($this->errors as $error): ?>
+<p><?php echo $error; ?></p>
+<?php endforeach; ?>
+<?php endif; ?>
 <?php echo $this->form; ?>

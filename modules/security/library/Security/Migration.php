@@ -4,6 +4,8 @@ class Security_Migration extends Doctrine_Migration
 {
     protected $_migrationTableName = 'security_migration';
     
+    protected $_accountTable = null;
+    
     /**
      * getCurrentVersion
      *

@@ -28,10 +28,7 @@ SecurityAcl:
       type: integer(4)
   indexes:
     unique:
-      fields:
-        module_id:
-        resource_id:
-        privilege_id:
+      fields: [module_id, resource_id, privilege_id]
       type: unique
   relations: 
     Module: 
@@ -39,16 +36,22 @@ SecurityAcl:
       local: module_id
       foreign: id
       type: one
+      onUpdate: NO ACTION
+      onDelete: NO ACTION
     Resource: 
       class: SecurityAclPart
       local: resource_id
       foreign: id
       type: one
+      onUpdate: NO ACTION
+      onDelete: NO ACTION
     Privilege: 
       class: SecurityAclPart
       local: privilege_id
       foreign: id
       type: one
+      onUpdate: NO ACTION
+      onDelete: NO ACTION
     Groups:
       refClass: SecurityGroupAcl
       class: SecurityGroup
@@ -77,8 +80,7 @@ SecurityAclPart:
       type: string(32)
   indexes:
     unique:
-      fields:
-        name:
+      fields: [name]
       type: unique
   relations: 
     Modules: 
@@ -119,8 +121,7 @@ SecurityGroup:
       type: string(255)
   indexes:
     unique:
-      fields:
-        name:
+      fields: [name]
       type: unique
   relations: 
     Acl: 
@@ -155,11 +156,15 @@ SecurityGroupAcl:
       local: group_id
       foreign: id
       type: one
+      onUpdate: CASCADE
+      onDelete: CASCADE
     Acl: 
       class: SecurityAcl
       local: acl_id
       foreign: id
       type: one
+      onUpdate: CASCADE
+      onDelete: CASCADE
 SecurityOption: 
   tableName: security_option
   columns: 
@@ -193,3 +198,20 @@ SecurityOption:
       notnull: false
       autoincrement: false
       type: string(255)
+SecurityGroupAccount:
+  tableName: security_group_account
+  columns:
+    group_id:
+      unsigned: true
+      primary: true
+      notnull: true
+      autoincrement: false
+      type: integer(4)
+  relations:
+    Group:
+      class: SecurityGroup
+      local: group_id
+      foreign: id
+      type: one
+      onUpdate: CASCADE
+      onDelete: CASCADE

@@ -1,3 +1,8 @@
 <h2>Step Three</h2>
-<p>DB Privileges check</p>
+<p>Generate Models</p>
+<?php if (!empty($this->errors)): ?>
+<?php foreach ($this->errors as $error): ?>
+<p><?php echo $error; ?></p>
+<?php endforeach; ?>
+<?php endif; ?>
 <?php echo $this->form; ?>

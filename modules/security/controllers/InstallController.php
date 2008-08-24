@@ -8,6 +8,27 @@ class Security_InstallController extends Security_Controller_Action_Backend
     {
         parent::init();
         
+        // Set expiration to 5 minutes
+        $session = new Zend_Session_Namespace('SecurityInstall');
+        $session->setExpirationSeconds(600);
+        
+        if (!isset($session->exists)) {
+            
+            // Session expired or didn't exist, start at index if not already
+            $front = Zend_Controller_Front::getInstance();
+            $request = $this->getRequest();
+
+            if ($request->getActionName() != $front->getDefaultAction()) {
+                
+                $session->exists = true;
+                $this->_forward('index');
+            }
+        }
+        
+        $session->exists = true;
+        
+        
+        
         //if (!$this->getRequest()->isPost()) {
         //    
         //    try {
@@ -23,21 +44,24 @@ class Security_InstallController extends Security_Controller_Action_Backend
     
     public function indexAction()
     {
-        
+        // Intro
     }
     
     public function stepOneAction()
     {
+        // Check if bootstrap is setup properly
+        
         if ($this->getRequest()->isPost()) {
             
-            try {
-                $secSys = Security_System::getInstance();
-                $this->_forward('step-two');
-                return;
-
-            } catch (Security_Exception $e) {
-
-                $this->view->error = $e->getMessage();
+            $install = new Security_Install();
+            
+            if ($install->bootstrapIsSetup()) {
+                
+                $this->getHelper('Redirector')->gotoRoute(array('action'=>'step-two'), 'default');
+                
+            } else {
+                
+                $this->view->errors = $install->getErrors();
             }
         }
         $this->view->form = $this->_getForm();
@@ -46,86 +70,109 @@ class Security_InstallController extends Security_Controller_Action_Backend
     public function stepTwoAction()
     {
         // Check DB privileges
-        $path = dirname(dirname(__FILE__)) . '/data/migrations';
+        $migrationPath = dirname(dirname(__FILE__)) . '/data/migrations';
         
-        $this->view->path = $path;
-        $this->view->form = $this->_getForm();
+        $form = $this->_getForm();
+        $form->addElement('text', 'migrationPath', array(
+            'label' => 'Migrations path',
+            'size' => strlen($migrationPath) + 5,
+            'required' => true,
+            'value' => $migrationPath));
         
         if ($this->getRequest()->isPost()) {
             
-            $migration = new Security_Migration();
+            $install = new Security_Install();
             
-            if (!Zend_Loader::isReadable($path)) {
+            if ($install->hasRequiredDbAccess($form->getValue('migrationPath'))) {
                 
-                $errors[] = "Migrations path '$path' is not readable";
-                return;
-            }
-            
-            if (false === ($version = $migration->getCurrentVersion())) {
+                $this->_setSession('migrationPath', $form->getValue('migrationPath'));
+                $this->getHelper('Redirector')->gotoRoute(array('action'=>'step-three'), 'default');
                 
-                try {
-                    
-                    $migration->
-                }
-            
-            
-
-            
-            
-            if (false === ($version = $migration->getCurrentVersion())) {
-
-                return;
+            } else {
+                
+                $this->view->errors = $install->getErrors();
             }
-            
-            $this->_forward('step-three');
         }
-        if (!empty($errors)) {
-            $this->view->errors = $errors;
-        }
+        $this->view->form = $this->_getForm();
     }
     
     public function stepThreeAction()
     {
-        // Run migration
-        if ($this->getRequest()->isPost()) {
+        // Generate Models
+        $modelPath = dirname(dirname(dirname(dirname(__FILE__)))) . '/models';
+        $schemaPath = dirname(dirname(__FILE__)) . '/data/schema.yml';
+        
+        $form = $this->_getForm();
+        $form->addElement('text', 'accountTable', array('label' => 'Account table class', 'required' => true));
+        $form->addElement('text', 'accountTableAlias', array('label' => 'Account table plural alias', 'required' => true));
+        
+        $form->addElement('text', 'modelPath', array(
+            'label' => 'Model path',
+            'size' => strlen($modelPath) + 5,
+            'required' => true,
+            'value' => $modelPath));
+        
+        $form->addElement('text', 'schemaPath', array(
+            'label' => 'Schema path',
+            'size' => strlen($schemaPath) + 5,
+            'required' => true,
+            'value' => $schemaPath));
+        
+        if ($this->getRequest()->isPost() && $form->isValid($this->getRequest()->getPost())) {
             
-            try {
-
-                $sa->findAll();
-                $sap->findAll();
-                $sg->findAll();
-                $sga->findAll();
-                $so->findAll();
-
-            } catch (Exception $e) {
-
-                return;
+            $install = new Security_Install();
+            
+            if ($install->generateModels($form->getValue('accountTable'), $form->getValue('accountTableAlias'), $modelPath, $schemaPath)) {
+                
+                $this->_setSession('accountTable', $form->getValue('accountTable'));
+                $this->_setSession('accountTableAlias', $form->getValue('accountTableAlias'));
+                $this->_setSession('modelPath', $form->getValue('modelPath'));
+                $this->_setSession('schemaPath', $form->getValue('schemaPath'));
+                
+                $this->getHelper('Redirector')->gotoRoute(array('action'=>'step-four'), 'default');
+                
+            } else {
+                
+                $this->view->errors = $install->getErrors();
             }
-            
-            $this->_forward('step-four');
         }
-        $this->view->form = $this->_getForm();
+        $this->view->form = $form;
     }
     
     public function stepFourAction()
     {
-        // Check models
+        // Add relation to user table
         if ($this->getRequest()->isPost()) {
             
-            try{
-
-                $sa = Doctrine::getTable('SecurityAcl');
-                $sap = Doctrine::getTable('SecurityAclPart');
-                $sg = Doctrine::getTable('SecurityGroup');
-                $sga = Doctrine::getTable('SecurityGroupAcl');
-                $so = Doctrine::getTable('SecurityOption');
-
-            } catch (Exception $e) {
-
-                return;
-            }
+            $install = new Security_Install();
             
-            $this->_forward('finished');
+            if ($install->hasGroupsRelation($this->_getSession('accountTable'))) {
+                
+                $this->getHelper('Redirector')->gotoRoute(array('action'=>'step-five'), 'default');
+                
+            } else {
+                
+                $this->view->errors = $install->getErrors();
+            }
+        }
+        $this->view->form = $this->_getForm();
+    }
+    
+    public function stepFiveAction()
+    {
+        // Generate and execute SQL from models
+        if ($this->getRequest()->isPost()) {
+            
+            $install = new Security_Install();
+            
+            if ($install->executeSqlFromModels($this->_getSession('accountTable'), $this->_getSession('migrationPath'))) {
+                
+                $this->getHelper('Redirector')->gotoRoute(array('action'=>'step-six'), 'default');
+                
+            } else {
+                
+                $this->view->errors = $install->getErrors();
+            }
         }
         $this->view->form = $this->_getForm();
     }
@@ -458,7 +505,22 @@ class Security_InstallController extends Security_Controller_Action_Backend
     protected function _generateForm()
     {
         $form = new Zend_Form();
-        $form->addElement('submit', 'submit', array('label' => 'Next'));
+        $form->addElement('submit', 'submit', array('label' => 'Next', 'order' => 100));
         return $form;
+    }
+    
+    protected function _getSession($name)
+    {
+        $session = new Zend_Session_Namespace('SecurityInstall');
+        if (isset($session->{$name})) {
+            return $session->{$name};
+        }
+        return null;
+    }
+    
+    protected function _setSession($name, $value)
+    {
+        $session = new Zend_Session_Namespace('SecurityInstall');
+        $session->{$name} = $value;
     }
 }
