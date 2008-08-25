@@ -21,7 +21,7 @@ class Security_InstallController extends Security_Controller_Action_Backend
             if ($request->getActionName() != $front->getDefaultAction()) {
                 
                 $session->exists = true;
-                $this->_forward('index');
+                $this->getHelper('Redirector')->gotoRoute(array('action'=>'index'), 'default');
             }
         }
         
@@ -45,6 +45,10 @@ class Security_InstallController extends Security_Controller_Action_Backend
     public function indexAction()
     {
         // Intro
+        $session = new Zend_Session_Namespace('SecurityInstall');
+        $session->unsetAll();
+        
+        $session->exists = true;
     }
     
     public function stepOneAction()
@@ -103,18 +107,18 @@ class Security_InstallController extends Security_Controller_Action_Backend
         $schemaPath = dirname(dirname(__FILE__)) . '/data/schema.yml';
         
         $form = $this->_getForm();
-        $form->addElement('text', 'accountTable', array('label' => 'Account table class', 'required' => true));
+        $form->addElement('text', 'accountTableClass', array('label' => 'Account table class', 'required' => true));
         $form->addElement('text', 'accountTableAlias', array('label' => 'Account table plural alias', 'required' => true));
         
         $form->addElement('text', 'modelPath', array(
             'label' => 'Model path',
-            'size' => strlen($modelPath) + 5,
+            'size' => strlen($modelPath),
             'required' => true,
             'value' => $modelPath));
         
         $form->addElement('text', 'schemaPath', array(
             'label' => 'Schema path',
-            'size' => strlen($schemaPath) + 5,
+            'size' => strlen($schemaPath),
             'required' => true,
             'value' => $schemaPath));
         
@@ -122,9 +126,9 @@ class Security_InstallController extends Security_Controller_Action_Backend
             
             $install = new Security_Install();
             
-            if ($install->generateModels($form->getValue('accountTable'), $form->getValue('accountTableAlias'), $modelPath, $schemaPath)) {
+            if ($install->generateModels($form->getValue('accountTableClass'), $form->getValue('accountTableAlias'), $modelPath, $schemaPath)) {
                 
-                $this->_setSession('accountTable', $form->getValue('accountTable'));
+                $this->_setSession('accountTableClass', $form->getValue('accountTableClass'));
                 $this->_setSession('accountTableAlias', $form->getValue('accountTableAlias'));
                 $this->_setSession('modelPath', $form->getValue('modelPath'));
                 $this->_setSession('schemaPath', $form->getValue('schemaPath'));
@@ -146,7 +150,7 @@ class Security_InstallController extends Security_Controller_Action_Backend
             
             $install = new Security_Install();
             
-            if ($install->hasGroupsRelation($this->_getSession('accountTable'))) {
+            if ($install->hasGroupsRelation($this->_getSession('accountTableClass'))) {
                 
                 $this->getHelper('Redirector')->gotoRoute(array('action'=>'step-five'), 'default');
                 
@@ -165,7 +169,7 @@ class Security_InstallController extends Security_Controller_Action_Backend
             
             $install = new Security_Install();
             
-            if ($install->executeSqlFromModels($this->_getSession('accountTable'), $this->_getSession('migrationPath'))) {
+            if ($install->executeSqlFromModels($this->_getSession('accountTableClass'), $this->_getSession('migrationPath'))) {
                 
                 $this->getHelper('Redirector')->gotoRoute(array('action'=>'step-six'), 'default');
                 
@@ -191,6 +195,8 @@ class Security_InstallController extends Security_Controller_Action_Backend
             $optionsPath = dirname(dirname(__FILE__)) . '/data/options.xml';
         }
         
+        $form->getElement('optionsPath')->setValue($optionsPath);
+        
         if (!Zend_Loader::isReadable($optionsPath)) {
             
             $this->view->errors = array("Path is not readable");
@@ -198,13 +204,28 @@ class Security_InstallController extends Security_Controller_Action_Backend
             return;
         }
         
-        $form->buildFromOptionsPath();
+        $form->buildFromOptionsPath(array('isInstall' => true));
+        
+        foreach($this->_getSession()->getIterator() as $name => $value) {
             
-        if ($this->getRequest()->isPost() && $form->isValid($this->getRequest()->getPost())) {
+            if (!in_array($name, array('exists', 'submit'))) {
+                
+                $form->getElement($name)->setValue($value);
+                
+                if ($form->getElement($name) instanceof Zend_Form_Element_Text) {
+                    
+                    $form->getElement($name)->setAttrib('size', strlen($value));
+                }
+            }
+        }
+        
+        $form->getElement('optionsPath')->setValue($optionsPath)->setAttrib('size', strlen($optionsPath));
+            
+        if ($this->getRequest()->isPost() && $form->isValid(array_merge($this->getRequest()->getPost(), array('optionsPath', $optionsPath)))) {
             
             $install = new Security_Install();
             
-            if ($install->setSecurityOptions($form->getOptions()) {
+            if ($install->setSecurityOptions($form->getValues())) {
                 
                 $this->getHelper('Redirector')->gotoRoute(array('action'=>'finished'), 'default');
                 
@@ -266,9 +287,12 @@ class Security_InstallController extends Security_Controller_Action_Backend
         return $form;
     }
     
-    protected function _getSession($name)
+    protected function _getSession($name = null)
     {
         $session = new Zend_Session_Namespace('SecurityInstall');
+        if (null === $name) {
+            return $session;
+        }
         if (isset($session->{$name})) {
             return $session->{$name};
         }

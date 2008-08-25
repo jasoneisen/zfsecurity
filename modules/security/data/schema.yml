@@ -174,7 +174,7 @@ SecurityOption:
       notnull: true
       autoincrement: false
       type: string(64)
-    name: 
+    label: 
       fixed: false
       primary: false
       notnull: true
@@ -198,6 +198,7 @@ SecurityOption:
       notnull: false
       autoincrement: false
       type: string(255)
+    required: boolean
 SecurityGroupAccount:
   tableName: security_group_account
   columns:

@@ -4,22 +4,21 @@ class Security_Form_Options extends Zend_Form
 {
     public function init()
     {
-        $this->addElement('text', 'path', array('label' => 'Options path', 'required' => true));
+        $this->addElement('text', 'optionsPath', array('label' => 'Options path', 'required' => true));
         
         $this->addElement('submit', 'submit', array('label' => 'Submit', 'order' => 100));
     }
-    public function buildFromOptions($path)
+    public function buildFromOptionsPath($formOptions = array())
     {
         $optionsPath = $this->getValue('optionsPath');
         
         $options = new Zend_Config_Xml($optionsPath);
         
         $this->removeElement('optionsPath');
-        $this->addElement('hidden', 'optionsPath', array('value' => $optionsPath));
         
         foreach ($options as $name => $option) {
             
-            $validator = array();
+            $validators = array();
             
             switch ($option->type) {
                 
@@ -46,7 +45,14 @@ class Security_Form_Options extends Zend_Form
                 break;
             }
             
-            $this->addElement($type, $name, array('label' => $options->name, 'validators' => array($validator), 'required' => true));
+            $this->addElement($type, $name, array('label' => $option->label,
+                                                  'validators' => array($validators),
+                                                  'required' => $option->required));
+            
+            if (false !== strpos($name, 'enable') && isset($formOptions['isInstall']) && $formOptions['isInstall'] === true) {
+                
+                $this->getElement($name)->setAttrib('disabled', 'disabled');
+            }
         }
     }
 }

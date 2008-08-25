@@ -210,4 +210,39 @@ class Security_Install
         }
         return false;
     }
+    
+    public function setSecurityOptions($formOptions)
+    {
+        try {
+            $configOptions = new Zend_Config_Xml($formOptions['optionsPath']);
+            
+            foreach ($formOptions as $tag => $value) {
+                
+                if ($tag != 'submit') {
+                    
+                    $option = Doctrine::getTable('SecurityOption')->findOneByTag($tag);
+                    
+                    if (!$option || $option instanceof Doctrine_Null) {
+                        
+                        $option = new SecurityOption();
+                        
+                    }
+                        
+                    $option->tag = $tag;
+                    $option->label = $configOptions->$tag->label;
+                    $option->value = $value;
+                    $option->type = $configOptions->{$tag}->type;
+                    $option->description = $configOptions->{$tag}->description;
+                    $option->required = $configOptions->{$tag}->required;
+                    $option->save();
+                }
+            }
+            
+        } catch (Exception $e) {
+            
+            $this->_addError($e->getMessage());
+            return false;
+        }
+        return true;
+    }
 }
