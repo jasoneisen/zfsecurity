@@ -12,7 +12,7 @@
     relation to your schema file, whichever format it may be.</p>
 <br />
 <pre>
-$this->hasMany('Group as Groups', array(
+$this->hasMany('SecurityGroup as Groups', array(
 	'local'		=>	'<?php echo $this->column; ?>',
 	'foreign'	=>	'group_id',
 	'refClass'	=>	'SecurityGroupAccount'));
