@@ -14,6 +14,11 @@ class Security_Controller_Plugin_Loader extends Zend_Controller_Plugin_Abstract
 
 	public function routeStartup(Zend_Controller_Request_Abstract $request)
 	{
+	    if ($request->getModuleName() == 'security') {
+	        
+	        $front = Zend_Controller_Front::getInstance();
+	        $front->registerPlugin(new Security_Controller_Plugin_Rest());
+	    }
 		
 	}
 	

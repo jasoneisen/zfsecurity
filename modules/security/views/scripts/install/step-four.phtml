@@ -7,7 +7,7 @@
 <?php endforeach; ?>
 </ul>
 <?php endif; ?>
-<p>Please add the following to your base accounts class.</p>
+<p>Please add the following to your Base<?php echo $this->class; ?> class.</p>
 <br />
 <pre>
 $this->hasMany('Group as Groups', array(

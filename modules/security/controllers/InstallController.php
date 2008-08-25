@@ -179,6 +179,7 @@ class Security_InstallController extends Security_Controller_Action_Backend
                 $this->view->errors = $install->getErrors();
             }
         }
+        $this->view->class = $this->_getSession('accountTableClass');
         $this->view->column = Doctrine::getTable($this->_getSession('accountTableClass'))->getIdentifier();
         
         $form = new Zend_Form();
