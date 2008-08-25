@@ -243,43 +243,6 @@ class Security_InstallController extends Security_Controller_Action_Backend
         // Done, send to /security/update to update acl list
     }
     
-    public function justDoItAction()
-    {
-        $secSys = Security_System::getInstance();
-        
-        //if ($secSys->isInstalled()) {
-        //    $this->_redirect('/security');
-        //}
-        
-        $exporter = new Doctrine_Export();
-        
-        $tables = array_values(array_merge(Doctrine::loadModels($secSys->getDir('models'), Doctrine::MODEL_LOADING_CONSERVATIVE),
-                              array('Group'.$secSys->getOption('accountTableClass'))));
-        
-        if ($queries = $exporter->exportSortedClassesSql($tables, false)) {
-            
-            $conn = Doctrine_Manager::getInstance()->getCurrentConnection()->getDbh();
-            
-            foreach ($queries as $query) {
-                    
-                $conn->exec($query);
-            }
-            
-            $conn->exec("INSERT INTO `security_option` VALUES ('acl_enabled', 'ACL System', '0', 'Enables/Disables ACL')");
-            $conn->exec("INSERT INTO `security_option` VALUES ('system_enabled', 'Security System', '0', 'Enables/Disables the entire system.  This overrides all other enabled values.')");
-            $conn->exec("INSERT INTO `security_option` VALUES ('useSecurityErrorController', 'Security Error Controller', '1', 'Enables/Disables the use of the Security module''s error controller for security restrictions.')");
-            $conn->exec("INSERT INTO `security_option` VALUES ('activeModelClass', 'Active Model Name', 'Security_User', 'The name of the model used with your online user.')");
-            $conn->exec("INSERT INTO `security_option` VALUES ('accountTableClass', 'Account Table Name', 'User', 'Database table where your accounts are stored.')");
-            $conn->exec("INSERT INTO `security_option` VALUES ('loginIdentityColumn', 'Identity Column Name', 'user_email', 'Doctrine aliased column name for identity column. Used to authorize logins.')");
-            $conn->exec("INSERT INTO `security_option` VALUES ('loginIdentityLabel', 'Identity Column Title', 'Email Address', 'Title to give the identity column.  For use in forms/views.')");
-            $conn->exec("INSERT INTO `security_option` VALUES ('loginCredentialColumn', 'Credential Column Name', 'user_password', 'Doctrine aliased column name for credential column. Used to authorize logins.')");
-            $conn->exec("INSERT INTO `security_option` VALUES ('loginCredentialLabel', 'Credential Column Title', 'Password', 'Title to give the credential column.  For use in forms/views.')");
-            $conn->exec("INSERT INTO `security_option` VALUES ('loginCredentialTreatment', 'Credential Column Treatment', 'md5(?)', 'Treatment for the credential column during authorization.')");
-        }
-        
-        $this->_redirect('/security');
-    }
-    
     protected function _generateForm()
     {
         $form = new Zend_Form();
