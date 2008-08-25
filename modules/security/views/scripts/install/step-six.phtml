@@ -1,0 +1,8 @@
+<h2>Step Six</h2>
+<p>Set configuration</p>
+<?php if (!empty($this->errors)): ?>
+<?php foreach ($this->errors as $error): ?>
+<p><?php echo $error; ?></p>
+<?php endforeach; ?>
+<?php endif; ?>
+<?php echo $this->form; ?>

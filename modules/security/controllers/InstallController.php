@@ -177,6 +177,46 @@ class Security_InstallController extends Security_Controller_Action_Backend
         $this->view->form = $this->_getForm();
     }
     
+    public function stepSixAction()
+    {
+        // Create / save options
+        $form = new Security_Form_Options();
+        
+        if ($this->getRequest()->isPost() && $form->isValid($this->getRequest()->getPost())) {
+            
+            $optionsPath = $form->getValue('optionsPath');
+        
+        } else {
+            
+            $optionsPath = dirname(dirname(__FILE__)) . '/data/options.xml';
+        }
+        
+        if (!Zend_Loader::isReadable($optionsPath)) {
+            
+            $this->view->errors = array("Path is not readable");
+            $this->view->form = $form;
+            return;
+        }
+        
+        $form->buildFromOptionsPath();
+            
+        if ($this->getRequest()->isPost() && $form->isValid($this->getRequest()->getPost())) {
+            
+            $install = new Security_Install();
+            
+            if ($install->setSecurityOptions($form->getOptions()) {
+                
+                $this->getHelper('Redirector')->gotoRoute(array('action'=>'finished'), 'default');
+                
+            } else {
+                
+                $this->view->errors = $install->getErrors();
+            }
+        }
+        
+        $this->view->form = $form;
+    }
+    
     public function finishedAction()
     {
         // Done, send to /security/update to update acl list
