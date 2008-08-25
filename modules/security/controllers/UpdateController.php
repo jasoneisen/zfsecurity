@@ -2,6 +2,8 @@
 
 class Security_UpdateController extends Security_Controller_Action_Backend
 {
+    protected $_aclParts = array();
+    
     public function indexAction()
     {
         
@@ -9,97 +11,119 @@ class Security_UpdateController extends Security_Controller_Action_Backend
     
     public function aclAction()
     {
-        $gen = new Security_Acl_Generator();
+        $modules = $this->_getAclChanges();
         
         if (!$this->getRequest()->isPost()) {
             
-            $modules = array();
+            $this->view->modules = $modules;
             
-            foreach ($gen->getResources() as $genModule => $genResources) {
-                
-                foreach ($genResources as $genResource) {
-                    
-                    foreach ($gen->getActions($genResource) as $genAction) {
-                        
-                        if (!$this->_aclExists($genModule, $genResource, $genAction)) {
-
-                            $modules[$genModule]['resources'][$genResource]['privileges'][$genAction]['new'] = true;
-                        }
-                    }
-                }
-            }
-            
-            if (!empty($modules)) {
-                $this->view->acl = $modules;
-            }
         } else {
             
-            $parts = Doctrine_Query::create()
-                                     ->select('ap.name')
-                                     ->from('AclPart ap INDEXBY ap.name')
-                                     ->execute()
-                                     ->toArray();
-            
-            foreach ($gen->getResources() as $genModule => $genResources) {
+            foreach ($modules as $moduleName => $module) {
                 
-                $module = $this->_addPart($genModule);
+                $mPart = $this->_getPart($moduleName);
                 
-                foreach ($genResources as $genResource) {
+                foreach ($module['resources'] as $resourceName => $resource) {
                     
-                    $resource = $this->_addPart($genResource);
+                    $rPart = $this->_getPart($resourceName);
                     
-                    foreach ($gen->getActions($genResource) as $genAction) {
+                    foreach ($resource['privileges'] as $privName => $priv) {
                         
-                        $privilege = $this->_addPart($genAction);
+                        $pPart = $this->_getPart($privName);
                         
-                        if (!$this->_aclExists($module->name, $resource->name, $privilege->name)) {
+                        if ($priv) {
                            
                            $acl = new Acl();
-                           $acl->module_id = $module->id;
-                           $acl->resource_id = $resource->id;
-                           $acl->privilege_id = $privilege->id;
+                           $acl->module_id = $mPart->id;
+                           $acl->resource_id = $rPart->id;
+                           $acl->privilege_id = $pPart->id;
                            $acl->save();
+                           
+                        } else {
+                            
+                            Doctrine_Query::create()->delete()
+                                                    ->from('SecurityAcl')
+                                                    ->addWhere('module_id = ?', $mPart->id)
+                                                    ->addWhere('resource_id = ?', $rPart->id)
+                                                    ->addWhere('privilege_id = ?', $pPart->id)
+                                                    ->execute();
                         }
                     }
                 }
             }
+            $this->view->message = "ACL successfully updated.";
         }
     }
     
-    protected function _aclExists($module, $resource, $privilege)
+    protected function _addPart($part)
     {
-        try {
-            Doctrine::getTable('Acl');
-        } catch (Doctrine_Exception $e) {
-            return;
+        if (!isset($this->_aclParts[$part->name])) {
+            $this->_aclParts[$part->name] = $part;
         }
-        // This could be time tested against looping through Security_Acl::getInstance->getAcl()
-        return (Doctrine_Query::create()
-                                ->from('Acl a')
-                                ->innerJoin('a.Module m')
-                                ->innerJoin('a.Resource r')
-                                ->innerJoin('a.Privilege p')
-                                ->addWhere('m.name = ?')
-                                ->addWhere('r.name = ?')
-                                ->addWhere('p.name = ?')
-                                ->fetchOne(array($module, $resource, $privilege))) ? true : false;
     }
     
-    protected function _addPart($name)
+    protected function _getPart($name)
     {
-        if (!isset($this->_parts[$name])) {
+        if (!isset($this->_aclParts[$name])) {
+            
             if (!$aclPart = Doctrine::getTable('AclPart')->findOneByName($name)) {
+                
                 $aclPart = new AclPart();
                 $aclPart->name = $name;
                 $aclPart->save();
             }
-            $this->_parts[$name] = $aclPart;
+            $this->_aclParts[$name] = $aclPart;
         }
-        return $this->_parts[$name];
+        return $this->_aclParts[$name];
+    }
+    
+    protected function _getAclChanges()
+    {
+        $gen = new Security_Acl_Generator();
+        $acls = Security_Acl::getInstance()->getAcl();
+        $modules = array();
+        
+        foreach ($acls as $acl) {
+            
+            $modules[$acl->Module->name]['resources'][$acl->Resource->name]['privileges'][$acl->Privilege->name] = 0;
+            
+            $this->_addPart($acl->Module);
+            $this->_addPart($acl->Resource);
+            $this->_addPart($acl->Privilege);
+        }
+        
+        foreach ($gen->getResources() as $genModule => $genResources) {
+            
+            foreach ($genResources as $genResource) {
+                
+                foreach ($gen->getActions($genResource) as $genAction) {
+                    
+                    if (!isset($modules[$genModule]['resources'][$genResource]['privileges'][$genAction])) {
+
+                        $modules[$genModule]['resources'][$genResource]['privileges'][$genAction] = 1;
+                        
+                    } else {
+                        
+                        unset($modules[$genModule]['resources'][$genResource]['privileges'][$genAction]);
+                    }
+                }
+                
+                if (empty($modules[$genModule]['resources'][$genResource]['privileges'])) {
+                    
+                    unset($modules[$genModule]['resources'][$genResource]);
+                }
+            }
+            
+            if (empty($modules[$genModule]['resources'])) {
+                
+                unset($modules[$genModule]);
+            }
+        }
+        return $modules;
     }
     
     protected function _generateForm()
     {
-        
+        // This does nothing
     }
 }

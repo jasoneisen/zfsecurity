@@ -1,8 +1,14 @@
-<h2>Step Two</h2>
-<p>Check DB privileges</p>
+<h2>Step Two: Database Privileges</h2>
 <?php if (!empty($this->errors)): ?>
+<p>The following error(s) occured:</p>
+<ul class="error">
 <?php foreach ($this->errors as $error): ?>
-<p><?php echo $error; ?></p>
+    <li class="error"><?php echo $error; ?></li>
 <?php endforeach; ?>
+</ul>
 <?php endif; ?>
+<p>The installer will now check that it has proper database privileges:<br />
+    CREATE, INSERT, UPDATE, DELETE, and ALTER.</p>
+<br />
+<p>To do this, the installer will make use of it's included migration files.</p>
 <?php echo $this->form; ?>

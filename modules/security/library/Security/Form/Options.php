@@ -2,56 +2,101 @@
 
 class Security_Form_Options extends Zend_Form
 {
+    protected $_isInstall = false;
+    
+    protected $_optionsPath = null;
+    
     public function init()
     {
         $this->addElement('text', 'optionsPath', array('label' => 'Options path', 'required' => true));
         
         $this->addElement('submit', 'submit', array('label' => 'Submit', 'order' => 100));
     }
-    public function buildFromOptionsPath($formOptions = array())
+    
+    public function setIsInstall($value = true)
     {
-        $optionsPath = $this->getValue('optionsPath');
+        $this->_isInstall = (bool) $value;
+    }
+    
+    public function isInstall()
+    {
+        return $this->_isInstall;
+    }
+    
+    public function setOptionsPath($path)
+    {
+        $this->_optionsPath = $path;
+    }
+    
+    public function getOptionsPath()
+    {
+        if (null === $this->_optionsPath) {
+            throw new Security_Exception("Options path has not been set");
+        }
+        return $this->_optionsPath;
+    }
+    
+    public function buildFromOptionsPath($querySystem = true, $options = array())
+    {
+        $optionsPath = $this->getOptionsPath();
         
-        $options = new Zend_Config_Xml($optionsPath);
+        $configs = new Zend_Config_Xml($optionsPath);
         
         $this->removeElement('optionsPath');
         
-        foreach ($options as $name => $option) {
+        if ($querySystem === true) {
+            $secSys = Security_System::getInstance();
+        }
+        
+        foreach ($configs as $name => $config) {
             
-            $validators = array();
+            if (empty($options) || in_array($name, $options)) {
             
-            switch ($option->type) {
+                $validators = array();
                 
-                case 'bool':
-                    $type = 'checkbox';
-                break;
+                switch ($config->type) {
+                    
+                    case 'bool':
+                        $type = 'checkbox';
+                    break;
+                    
+                    case 'number':
+                        $type = 'text';
+                        $validator = 'Digits';
+                    break;
+                    
+                    case 'string':
+                        $type = 'text';
+                    break;
+                    
+                    case 'text':
+                        $type = 'textarea';
+                    break;
+                    
+                    case 'date':
+                        $type = 'text';
+                        $validator = 'Date';
+                    break;
+                }
                 
-                case 'number':
-                    $type = 'text';
-                    $validator = 'Digits';
-                break;
+                $this->addElement($type, $name, array('label' => $config->description,
+                                                      'validators' => array($validators),
+                                                      'required' => $config->required));
                 
-                case 'string':
-                    $type = 'text';
-                break;
+                $this->addDisplayGroup(array($name), $name .'_group', array('legend' => $config->label));
                 
-                case 'text':
-                    $type = 'textarea';
-                break;
+                if (false !== strpos($name, 'enable') && $this->isInstall()) {
+                    
+                    $this->getElement($name)->setAttrib('disabled', 'disabled');
+                }
                 
-                case 'date':
-                    $type = 'text';
-                    $validator = 'Date';
-                break;
-            }
-            
-            $this->addElement($type, $name, array('label' => $option->label,
-                                                  'validators' => array($validators),
-                                                  'required' => $option->required));
-            
-            if (false !== strpos($name, 'enable') && isset($formOptions['isInstall']) && $formOptions['isInstall'] === true) {
-                
-                $this->getElement($name)->setAttrib('disabled', 'disabled');
+                if ($querySystem === true) {
+                    
+                    $this->getElement($name)->setValue($secSys->getParam($name));
+                    if ($config->type == 'string') {
+                        $this->getElement($name)->setAttrib('size', strlen($secSys->getParam($name))+5);
+                    }
+                }
             }
         }
     }

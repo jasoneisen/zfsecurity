@@ -80,11 +80,13 @@ class Security_Acl_Generator
         $reflect = new ReflectionClass($className);
         $actions = array();
         
+        $camelCase = new Zend_Filter_Word_CamelCaseToDash();
+        
         foreach ($reflect->getMethods() as $method)
         {
             // Find the action methods
             if (preg_match('/^(\w+)Action$/', $method->name, $matches))
-                $actions[] = $matches[1];
+                $actions[] = strtolower($camelCase->filter($matches[1]));
         }
         return $actions;
     }

@@ -42,7 +42,9 @@ abstract class Security_Controller_Action_Backend extends Zend_Controller_Action
             $form = $this->_generateForm();
             
             if ($method !== null) {
-                $form->getElement('_method')->setValue($method);
+                if ($form->getElement('_method')) {
+                    $form->getElement('_method')->setValue($method);
+                }
             }
             
             $this->_setForm($form);

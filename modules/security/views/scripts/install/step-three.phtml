@@ -1,8 +1,11 @@
-<h2>Step Three</h2>
-<p>Generate Models</p>
+<h2>Step Three: Model Generation</h2>
 <?php if (!empty($this->errors)): ?>
+<p>The following error(s) occured:</p>
+<ul class="error">
 <?php foreach ($this->errors as $error): ?>
-<p><?php echo $error; ?></p>
+    <li class="error"><?php echo $error; ?></li>
 <?php endforeach; ?>
+</ul>
 <?php endif; ?>
+<p>Please enter the following information about your application, and verify the directories are correct.</p>
 <?php echo $this->form; ?>

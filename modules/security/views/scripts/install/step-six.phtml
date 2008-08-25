@@ -1,8 +1,13 @@
-<h2>Step Six</h2>
-<p>Set configuration</p>
+<h2>Step Six: Save Configuration</h2>
 <?php if (!empty($this->errors)): ?>
+<p>The following error(s) occured:</p>
+<ul class="error">
 <?php foreach ($this->errors as $error): ?>
-<p><?php echo $error; ?></p>
+    <li class="error"><?php echo $error; ?></li>
 <?php endforeach; ?>
+</ul>
 <?php endif; ?>
+<p>Please fill out the following information.  Values that have been previously
+    entered during the install are already populated for you.  Some fields are
+    disabled, as they should not be entered until the ACL has been populated.</p>
 <?php echo $this->form; ?>

@@ -1,8 +1,11 @@
-<h2>Step Five</h2>
-<p>Generate and execute SQL from models</p>
+<h2>Step Five: Execute SQL</h2>
 <?php if (!empty($this->errors)): ?>
+<p>The following error(s) occured:</p>
+<ul class="error">
 <?php foreach ($this->errors as $error): ?>
-<p><?php echo $error; ?></p>
+    <li class="error"><?php echo $error; ?></li>
 <?php endforeach; ?>
+</ul>
 <?php endif; ?>
+<p>The installer will now generate and execute the sql from the models it has generated.</p>
 <?php echo $this->form; ?>

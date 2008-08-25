@@ -2,8 +2,6 @@
 
 final class Security_System
 {
-    const ERROR_NO_START_CALLED = 'Cannot get instance before Security_System::start() has been called';
-    
     private static $_instance = null;
     
     private $_installed = null;
@@ -30,7 +28,7 @@ final class Security_System
         }
         
         if ($params instanceof Doctrine_Collection || $params instanceof Zend_Config) {
-            
+                
                 $params = $params->toArray();
         }
             
@@ -43,33 +41,34 @@ final class Security_System
             return;
         }
         
-        foreach ($params as $name => $value) {
+        foreach ($params as $param) {
             
-            if (strstr($name, '_enabled')) {
+            if (strstr($param['tag'], 'enabled')) {
                 
-                if ($value) {
+                if ($param['value']) {
                 
-                    list($tag) = explode('_', $name, 2);
+                    list($tag) = explode('enabled', $name, 2);
+                    die($tag);
                     $this->enable($tag);
                     
                 }
                 
             } else {
                 
-                $this->_params[$name] = (string) $value;
+                $this->_params[$param['tag']] = (string) $param['value'];
             }
         }
         
         // For BC
-        if (Zend_Loader::isReadable('Security/Account/GroupLink.php')) {
-            require_once 'Security/Account/GroupLink.php';
-        }
+        //if (Zend_Loader::isReadable('Security/Account/GroupLink.php')) {
+        //    require_once 'Security/Account/GroupLink.php';
+        //}
     }
     
     public static function getInstance()
     {
         if (null === self::$_instance) {
-            throw new Security_Exception(self::ERROR_NO_START_CALLED);
+            throw new Security_Exception('Cannot get instance before Security_System::start() has been called');
         }
 
         return self::$_instance;

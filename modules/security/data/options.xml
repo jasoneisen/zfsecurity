@@ -15,7 +15,7 @@
     <accountTableAlias>
         <label>Account Table Plural Alias</label>
         <type>string</type>
-        <description>Plural alias for the account table for relating $group->"Accounts"</description>
+        <description>Plural alias for the account table for relating $group-&gt;"Accounts"</description>
         <required>1</required>
     </accountTableAlias>
     <loginIdentityLabel>

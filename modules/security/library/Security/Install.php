@@ -32,6 +32,36 @@ class Security_Install
         return true;
     }
     
+    public function optionsPathCorrect($path)
+    {
+        if (!Zend_Loader::isReadable($path)) {
+    
+            $this->_addError("Options file is not readable");
+            return false;
+        }
+        
+        if (!$string = @file_get_contents($path)) {
+            
+            $this->_addError("Options file could not be opened");
+            return false;
+        }
+        
+        if (substr($string, 0, 5) != '<?xml') {
+            $this->_addError("Options file does not contain XML");
+            return false;
+        }
+        try {
+            $config = new Zend_Config_Xml($path);
+            
+        } catch (Exception $e) {
+            $this->_addError($e->getMessage());
+            return false;
+        }
+        
+        $config = $config->toArray();
+        return !empty($config);
+    }
+    
     public function hasRequiredDbAccess($migrationPath)
     {
         if (!Zend_Loader::isReadable($migrationPath)) {
@@ -86,6 +116,23 @@ class Security_Install
     
     public function generateModels($accountTable, $alias, $modelPath, $schemaPath)
     {
+        if (!Zend_Loader::isReadable($schemaPath)) {
+    
+            $this->_addError("Schema file is not readable");
+            return false;
+        }
+        
+        if (!$string = @file_get_contents($schemaPath)) {
+            
+            $this->_addError("Schema file could not be opened");
+            return false;
+        }
+        
+        if (substr($string, 0, 3) != '---') {
+            $this->_addError("Schema file does not contain YML");
+            return false;
+        }
+        
         try {
             $table = Doctrine::getTable($accountTable);
             
@@ -96,7 +143,7 @@ class Security_Install
         
         if (!is_writable($modelPath)) {
             
-            $this->_addError("Models path '$modelPath' is not writable");
+            $this->_addError("Models path '$modelPath' is not writable.  Please chmod -R 777.");
         }
         
         if (!Zend_Loader::isReadable($schemaPath)) {

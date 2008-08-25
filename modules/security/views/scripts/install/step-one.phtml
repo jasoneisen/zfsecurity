@@ -1,8 +1,26 @@
-<h2>Step One</h2>
-<p>Add stuff to your bootstrap</p>
+<h2>Step One: Bootstrap and Options</h2>
 <?php if (!empty($this->errors)): ?>
+<p>The following error(s) occured:</p>
+<ul class="error">
 <?php foreach ($this->errors as $error): ?>
-<p><?php echo $error; ?></p>
+    <li class="error"><?php echo $error; ?></li>
 <?php endforeach; ?>
+</ul>
 <?php endif; ?>
+<p>The installer has determined that the security library to be in the following directory.
+    Please add this to your include path (or the right one if this is mistaken):</p>
+<br />
+<pre>
+<?php echo $this->path; ?>
+</pre>
+<br />
+<p>Next, place the following line near the end of your bootstrap.
+    Make sure it is *after* you have set up your doctrine database connection
+    and configured your front controller.</p>
+<br />
+<pre>
+Security_System::start();
+</pre>
+<br />
+<p>Last, the installer needs to load options from it's included xml file.</p>
 <?php echo $this->form; ?>

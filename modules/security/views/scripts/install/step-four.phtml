@@ -1,8 +1,18 @@
-<h2>Step Four</h2>
-<p>Add relation to account model</p>
+<h2>Step Four: Add Relation</h2>
 <?php if (!empty($this->errors)): ?>
+<p>The following error(s) occured:</p>
+<ul class="error">
 <?php foreach ($this->errors as $error): ?>
-<p><?php echo $error; ?></p>
+    <li class="error"><?php echo $error; ?></li>
 <?php endforeach; ?>
+</ul>
 <?php endif; ?>
+<p>Please add the following to your base accounts class.</p>
+<br />
+<pre>
+$this->hasMany('Group as Groups', array(
+	'local'		=>	'<?php echo $this->column; ?>',
+	'foreign'	=>	'group_id',
+	'refClass'	=>	'SecurityGroupAccount'));
+</pre>
 <?php echo $this->form; ?>
