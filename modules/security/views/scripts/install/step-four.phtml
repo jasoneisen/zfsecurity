@@ -7,7 +7,9 @@
 <?php endforeach; ?>
 </ul>
 <?php endif; ?>
-<p>Please add the following to your Base<?php echo $this->class; ?> class.</p>
+<p>Please add the following to your Base<?php echo $this->class; ?> class.
+    If you plan on regenerating your models at any point, also add the
+    relation to your schema file, whichever format it may be.</p>
 <br />
 <pre>
 $this->hasMany('Group as Groups', array(
