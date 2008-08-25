@@ -7,7 +7,7 @@
     </tr>
 <?php foreach ($this->accounts as $account): ?>
     <tr>
-        <td><?php echo $account->{$this->columnName}; ?></td>
+        <td><?php echo $account->{$this->identityColumn}; ?></td>
         <td><a href="<?php echo $this->Url(array('id'=>current($account->identifier())), 'edit_security_account_path'); ?>">Edit</a></td>
         <td><a href="<?php echo $this->Url(array('id'=>current($account->identifier())), 'delete_security_account_path'); ?>">Delete</a></td>
     </tr>

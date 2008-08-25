@@ -3,15 +3,12 @@
     <activeModelClass>WebUser</activeModelClass>
     <accountTableClass>User</accountTableClass>
     <loginIdentityColumn>user_email</loginIdentityColumn>
-    <loginIdentityColumn>Email Address</loginIdentityColumn>
+    <loginIdentityLabel>Email Address</loginIdentityLabel>
     <loginCredentialColumn>user_password</loginCredentialColumn>
     <loginCredentialLabel>Password</loginCredentialLabel>
     <loginCredentialTreatment>md5(?)</loginCredentialTreatment>
-    <accountIdentityColumn>user_email</accountIdentityColumn>
-    <accountCredentialColumn>user_password</accountCredentialColumn>
-    <accountCredentialTreatment>md5(?)</accountCredentialTreatment>
     <useSecurityErrorController>1</useSecurityErrorController>
-    <acl_enabled>1</acl_enabled>
-    <system_enabled>0</system_enabled>
+    <acl_enabled>0</acl_enabled>
+    <system_enabled>1</system_enabled>
     <getDbOptions>0</getDbOptions>
 </options>
