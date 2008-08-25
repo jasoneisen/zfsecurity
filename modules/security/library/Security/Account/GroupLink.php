@@ -1,6 +1,6 @@
 <?php
 
-$tableName = $this->getParam('accountTableName');
+$tableName = $this->getParam('accountTableClass');
 $accountTable = Doctrine::getTable($tableName);
 $accountIdentifier = $accountTable->getIdentifier();
 

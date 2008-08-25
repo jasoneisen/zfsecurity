@@ -5,15 +5,15 @@ class Security_AccountsController extends Security_Controller_Action_Backend
     public function init()
     {
         parent::init();
-        $this->view->columnTitle = $this->_secParam('identityColumnTitle');
-        $this->view->columnName = $this->_secParam('identityColumnName');
+        $this->view->identityLabel = $this->_secParam('loginIdentityLabel');
+        $this->view->identityColumn = $this->_secParam('loginIdentityColumn');
     }
     
     public function indexAction()
     {
         $this->view->accounts = Doctrine_Query::create()
-                                                ->from($this->_secParam('accountTableName') .' a')
-                                                ->orderby('a.'.$this->_secParam('identityColumnName'))
+                                                ->from($this->_secParam('accountTableClass') .' a')
+                                                ->orderby('a.'.$this->_secParam('loginIdentityColumn'))
                                                 ->execute();
     }
     
@@ -71,8 +71,8 @@ class Security_AccountsController extends Security_Controller_Action_Backend
     
     protected function _generateForm()
     {
-        $identifier = Doctrine::getTable($this->_secParam('accountTableName'))->getIdentifier();
-        $identityColumn = $this->_secParam('identityColumnName');
+        $identifier = Doctrine::getTable($this->_secParam('accountTableClass'))->getIdentifier();
+        $identityColumn = $this->_secParam('loginIdentityColumn');
                                 
         $form = new Security_Form_Account();
         
@@ -100,9 +100,9 @@ class Security_AccountsController extends Security_Controller_Action_Backend
     
     protected function _saveAccount($data, $account = null)
     {
-        $tableName = $this->_secParam('accountTableName');
-        $identityColumnName = $this->_secParam('identityColumnName');
-        $credentialColumnName = $this->_secParam('credentialColumnName');
+        $tableName = $this->_secParam('accountTableClass');
+        $identityColumn = $this->_secParam('loginIdentityColumn');
+        $credentialColumn = $this->_secParam('loginCredentialColumn');
         $accountIdentifier = Doctrine::getTable($tableName)->getIdentifier();
         
         $groupLink = 'Group' . $tableName;
@@ -124,17 +124,17 @@ class Security_AccountsController extends Security_Controller_Action_Backend
         
         $query = Doctrine_Query::create()
                                  ->update($tableName.' a')
-                                 ->set('a.'. $identityColumnName, '?', $data['account']['identity'])
+                                 ->set('a.'. $identityColumn, '?', $data['account']['identity'])
                                  ->addWhere('a.'. $accountIdentifier .' = ?', current($account->identifier()));
         
         if (!empty($data['account']['credential'])) {
             
-            if ($treatment = $this->_secParam('accountCredentialTreatment')) {
+            if ($treatment = $this->_secParam('loginCredentialTreatment')) {
                 
-                $query->set('a.'. $credentialColumnName, $treatment, $data['account']['credential']);
+                $query->set('a.'. $credentialColumn, $treatment, $data['account']['credential']);
             } else {
                 
-                $query->set('a.'. $credentialColumnName, '?', $data['account']['credential']);
+                $query->set('a.'. $credentialColumn, '?', $data['account']['credential']);
             }
         }
         
@@ -152,8 +152,9 @@ class Security_AccountsController extends Security_Controller_Action_Backend
     
     protected function _getAccount($id)
     {
-        $identifier = Doctrine::getTable($this->_secParam('accountTableName'))->getIdentifier();
-        $tableName = $this->_secParam('accountTableName');
+        $tableName = $this->_secParam('accountTableClass');
+        $identifier = Doctrine::getTable($tableName)->getIdentifier();
+        
         
         return Doctrine_Query::create()
                                ->from($tableName .' a')

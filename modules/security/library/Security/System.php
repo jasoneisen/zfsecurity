@@ -8,14 +8,7 @@ final class Security_System
     
     private $_installed = null;
     
-    private $_params =      array('activeModelName'             =>  null,
-                                  'accountTableName'            =>  null,
-                                  'identityColumnName'          =>  null,
-                                  'identityColumnTitle'         =>  null,
-                                  'credentialColumnName'        =>  null,
-                                  'credentialColumnTitle'       =>  null,
-                                  'credentialColumnTreatment'   =>  null,
-                                  'useSecurityErrorController'  =>  true);
+    private $_params =      array();
     
     private $_enabled =     array('system'    =>  false,
                                   'acl'       =>  false,
@@ -177,11 +170,11 @@ final class Security_System
     
     public static function getActiveModel() {
         
-        $modelName = Security_System::getInstance()->getParam('activeModelName');
+        $modelClass = Security_System::getInstance()->getParam('activeModelClass');
         
-        if (class_exists($modelName)) {
+        if (class_exists($modelClass)) {
             
-            if ($model = call_user_func($modelName.'::getInstance')) {
+            if ($model = call_user_func($modelClass.'::getInstance')) {
                 return $model;
             }
         }
@@ -220,7 +213,7 @@ final class Security_System
     {
         if (null === $this->_installed) {
             
-            if ($table = $this->getParam('accountTableName')) {
+            if ($table = $this->getParam('accountTableClass')) {
             
                 try {
                     

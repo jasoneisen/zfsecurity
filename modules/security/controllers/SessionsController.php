@@ -40,17 +40,17 @@ class Security_SessionsController extends Security_Controller_Action_Backend
             $options = Security_System::getInstance()->getParams();
             
             $authAdapter = new Site_Auth_Adapter_Doctrine_Record(
-			                        Doctrine::getConnectionByTableName($options['accountTableName']));
+			                        Doctrine::getConnectionByTableName($options['accountTableClass']));
 			
-			$authAdapter->setTableName($options['accountTableName'])
-            			->setIdentityColumn($options['identityColumnName'])
-            			->setCredentialColumn($options['credentialColumnName'])
+			$authAdapter->setTableName($options['accountTableClass'])
+            			->setIdentityColumn($options['loginIdentityColumn'])
+            			->setCredentialColumn($options['loginCredentialColumn'])
             			->setIdentity($form->getValue('identity'))
                         ->setCredential($form->getValue('credential'));
             
-            if ($options['credentialColumnTreatment']) {
+            if ($options['loginCredentialTreatment']) {
                 
-                $authAdapter->setCredentialTreatment($options['credentialColumnTreatment']);
+                $authAdapter->setCredentialTreatment($options['loginCredentialTreatment']);
             }
             
         	$result = Zend_Auth::getInstance()->authenticate($authAdapter);
@@ -61,7 +61,7 @@ class Security_SessionsController extends Security_Controller_Action_Backend
                 
                     Zend_Auth::getInstance()->getStorage()->write(
                         $authAdapter->getResultRowObject(
-                            Doctrine::getTable($options['accountTableName'])->getIdentifier(), $options['credentialColumnName']));
+                            Doctrine::getTable($options['accountTableClass'])->getIdentifier(), $options['loginCredentialColumn']));
                     
                     if ($form->getValue('return_url')) {
                         
@@ -74,7 +74,7 @@ class Security_SessionsController extends Security_Controller_Action_Backend
                 
                     $form->getElement('identity')
                          ->addValidator('customMessages', false, array(
-                             $options['identityColumnTitle'].' \''.$form->getValue('identity').'\' does not exist'))
+                             $options['loginIdentityLabel'].' \''.$form->getValue('identity').'\' does not exist'))
                          ->isValid($form->getValue('identity'));
                     break;
                 
@@ -82,7 +82,7 @@ class Security_SessionsController extends Security_Controller_Action_Backend
                 
                     $form->getElement('credential')
                          ->addValidator('customMessages', false, array(
-                             $options['credentialColumnTitle'] .' is invalid for supplied '. $options['identityColumnTitle']))
+                             $options['loginCredentialLabel'] .' is invalid for supplied '. $options['loginIdentityLabel']))
                          ->isValid($form->getValue('credential'));
                     break;
                 

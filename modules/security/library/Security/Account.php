@@ -11,7 +11,7 @@ abstract class Security_Account
 
     protected function __construct()
     {
-        $tableName = Security_System::getInstance()->getParam('accountTableName');
+        $tableName = Security_System::getInstance()->getParam('accountTableClass');
         $columnName = Doctrine::getTable($tableName)->getIdentifier();
         
         if (($auth = Zend_Auth::getInstance()->getIdentity()) && isset($auth->{$columnName})) {
@@ -29,7 +29,7 @@ abstract class Security_Account
         
         if (null === $this->_activeRecord || $this->_activeRecord instanceof Doctrine_Null) {
             
-            $name = Security_System::getInstance()->getParam('accountTableName');
+            $name = Security_System::getInstance()->getParam('accountTableClass');
             $this->_activeRecord = new $name();
         }
     }

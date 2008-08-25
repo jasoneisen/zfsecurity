@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<options>
+    <activeModelClass>
+        <name>Active Model Class</name>
+        <type>string</type>
+        <description>Class name of the model used to extend Security_Account</description>
+    </activeModelClass>
+    <accountTableClass>
+        <name>Account Table Class</name>
+        <type>string</type>
+        <description>Class name of the accounts table used in this application</description>
+    </accountTableClass>
+    <loginIdentityLabel>
+        <name>Login Identity Label</name>
+        <type>string</type>
+        <description>Identity label for display use (login form)</description>
+    </loginIdentityLabel>
+    <loginIdentityColumn>
+        <name>Login Identity Column</name>
+        <type>string</type>
+        <description>Column of the accounts table in which to check the identity (username)</description>
+    </loginIdentityColumn>
+    <loginCredentialLabel>
+        <name>Login Credential Label</name>
+        <type>string</type>
+        <description>Credential label for display use (login form)</description>
+    </loginCredentialLabel>
+    <loginCredentialColumn>
+        <name>Login Credential Column</name>
+        <type>string</type>
+        <description>Column of the accounts table in which to check the credential (password)</description>
+    </loginCredentialColumn>
+    <loginCredentialTreatment>
+        <name>Login Credential Treatment</name>
+        <type>string</type>
+        <description>Treatment of the credential input when authorizing</description>
+    </loginCredentialTreatment>
+    <sessionExpiration>
+        <name>Session Expiration</name>
+        <type>number</type>
+        <description>Time, in seconds, in which sessions should expire (leave empty for none)</description>
+    </sessionExpiration>
+    <useSecurityErrorController>
+        <name>Use Security Error Controller</name>
+        <type>bool</type>
+        <description>Use the security error controller for failed access and errors dealing with security</description>
+    </useSecurityErrorController>
+    <acl_enabled>1</acl_enabled>
+    <system_enabled>0</system_enabled>
+    <getDbOptions>0</getDbOptions>
+</options>
