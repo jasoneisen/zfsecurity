@@ -1,12 +1,20 @@
 <?php
 
-class Security_InstallController extends Security_Controller_Action_Backend
+class Security_InstallController extends Zend_Controller_Action
 {
+    protected $_formNamespace = 'securityFormNamespace';
+    
     protected $_parts = array();
     
     public function init()
     {
-        parent::init();
+        $front = Zend_Controller_Front::getInstance();
+        $request = $this->getRequest();
+        
+        if ($request->getActionName() == $front->getDefaultAction() && $request->getActionName() != 'index') {
+            $this->_forward('index');
+            return;
+        }
         
         // Set expiration to 5 minutes
         $session = new Zend_Session_Namespace('SecurityInstall');
@@ -15,9 +23,6 @@ class Security_InstallController extends Security_Controller_Action_Backend
         if (!isset($session->exists)) {
             
             // Session expired or didn't exist, start at index if not already
-            $front = Zend_Controller_Front::getInstance();
-            $request = $this->getRequest();
-
             if ($request->getActionName() != $front->getDefaultAction()) {
                 
                 $session->exists = true;
@@ -27,7 +32,7 @@ class Security_InstallController extends Security_Controller_Action_Backend
         
         $session->exists = true;
 
-        if (!$this->getRequest()->isPost()) {
+        if ($request->getActionName() != 'finished') {
             
             try {
                 
@@ -290,6 +295,28 @@ class Security_InstallController extends Security_Controller_Action_Backend
             return $session->{$name};
         }
         return null;
+    }
+    
+    protected function _getForm($method = null)
+    {
+        if (!Zend_Registry::isRegistered($this->_formNamespace)) {
+            
+            $form = $this->_generateForm();
+            
+            if ($method !== null) {
+                if ($form->getElement('_method')) {
+                    $form->getElement('_method')->setValue($method);
+                }
+            }
+            
+            $this->_setForm($form);
+        }
+        return Zend_Registry::get($this->_formNamespace);
+    }
+    
+    protected function _setForm($form)
+    {
+        Zend_Registry::set($this->_formNamespace, $form);
     }
     
     protected function _setSession($name, $value)
