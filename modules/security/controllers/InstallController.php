@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * This class has copied into it everything in Security_Controller_Action_Backend
+ * (which every other controller extends) because on index and step-one the include
+ * path may have not been added yet, thus creating a dependency which breaks
+ * the installer.
+ */
 class Security_InstallController extends Zend_Controller_Action
 {
     protected $_formNamespace = 'securityFormNamespace';
@@ -43,6 +49,27 @@ class Security_InstallController extends Zend_Controller_Action
                     }
                 }
             } catch (Exception $e) {}
+        }
+        
+        // Adds partial path to the view if it hasn't been already
+        // Copied from backend
+        $view = Zend_Layout::getMvcInstance()->getView();
+        
+        foreach ($view->getScriptPaths() as $path) {
+            
+            if (false !== strpos($path, 'security/views/scripts/')) {
+                
+                $setPath = dirname($path) .'/partials/';
+                
+            } elseif (false !== strpos($path, 'security/views/partials/')) {
+                
+                $dontSet = true;
+            }
+        }
+        
+        if (!isset($dontSet)) {
+            
+            $view->addScriptPath($setPath);
         }
     }
     

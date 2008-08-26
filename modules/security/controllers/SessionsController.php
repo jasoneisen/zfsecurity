@@ -31,7 +31,20 @@ class Security_SessionsController extends Security_Controller_Action_Backend
         if ($this->_getParam('isViewAction')) {
             $this->view->isViewAction = true;
         }
-        $this->view->form = $this->_getForm('post');
+        
+        $form = $this->_getForm('post');
+        
+        if (($returnUrl = $this->_getParam('returnUrl'))
+            || $returnUrl = str_replace($this->getRequest()->getBaseUrl(), "", $this->getRequest()->getRequestUri())) {
+            
+            // Check if the return url is pointing to this site
+            //if (0 === strstr($returnUrl, $this->view->BaseUrl())) {
+                
+                $form->getElement('return_url')->setValue($returnUrl);
+            //}
+        }
+        
+        $this->view->loginForm = $this->_getForm('post');
     }
     
     public function createAction()

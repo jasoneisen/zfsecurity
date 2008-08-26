@@ -1,4 +1,4 @@
 <?php if (!isset($this->isViewAction)): ?>
-<h2>Login</h2>
+<?php echo $this->partial('heading.phtml', array('heading' => 'Login')); ?>
 <?php endif; ?>
 <?php echo $this->form; ?>

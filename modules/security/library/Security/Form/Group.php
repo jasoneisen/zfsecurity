@@ -9,15 +9,18 @@ class Security_Form_Group extends Zend_Form
         $groupForm = new Zend_Form_SubForm(array('legend' => 'Group'));
 
         $groupForm->addElement('text', 'name', array(
-            'validators'    =>  array(
-                'alnum'),
+            'filters'    =>  array(
+                'StringTrim'),
             'required'  =>  true,
             'label' =>  'Name'));
         
         $groupForm->addElement('textarea', 'description', array(
-            'validators'    =>  array(),
+            'filters'    =>  array(
+                'StringTrim'),
             'required'  =>  false,
-            'label' =>  'Description'));
+            'label' =>  'Description',
+            'rows' => 8,
+            'cols' => 50));
         
         $this->addSubForm($groupForm, 'group');
         

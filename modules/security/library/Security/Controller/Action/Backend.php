@@ -20,6 +20,26 @@ abstract class Security_Controller_Action_Backend extends Zend_Controller_Action
     
     public function init()
     {
+        // Adds partial path to the view if it hasn't been already
+        $view = Zend_Layout::getMvcInstance()->getView();
+        
+        foreach ($view->getScriptPaths() as $path) {
+            
+            if (false !== strpos($path, 'security/views/scripts/')) {
+                
+                $addPath = dirname($path) .'/partials/';
+                
+            } elseif (false !== strpos($path, 'security/views/partials/')) {
+                
+                $dontSet = true;
+            }
+        }
+        
+        if (!isset($dontSet) && isset($addPath)) {
+            
+            $view->addScriptPath($addPath);
+        }
+        
         $front = Zend_Controller_Front::getInstance();
         $request = $this->getRequest();
         
