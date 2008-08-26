@@ -183,8 +183,10 @@ class Security_InstallController extends Zend_Controller_Action
                 $this->view->errors = $install->getErrors();
             }
         }
-        $this->view->class = $this->_getSession('accountTableClass');
-        $this->view->column = Doctrine::getTable($this->_getSession('accountTableClass'))->getIdentifier();
+        $class = $this->_getSession('accountTableClass');
+        $this->view->class = $class
+        $identifier = Doctrine::getTable($class)->getIdentifier();
+        $this->view->column = ($identifier == 'id') ? strtolower($class) . '_id' : $identifier;
         
         $form = new Zend_Form();
         $form->addElement('submit', 'submit', array('label' => 'Submit'));

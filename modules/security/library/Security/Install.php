@@ -189,7 +189,7 @@ class Security_Install
             
             $definitions['SecurityGroup']['relations'][$alias] = array(
                 'class' => $accountTable,
-                'local' => 'id',
+                'local' => 'group_id',
                 'foreign' => $localColumn,
                 'type' => Doctrine_Relation::MANY_COMPOSITE,
                 'alias' => $alias,
