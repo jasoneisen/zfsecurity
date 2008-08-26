@@ -115,10 +115,18 @@ class Security_SessionsController extends Security_Controller_Action_Backend
         $actionName = $this->getRequest()->getActionName();
         
         if ($actionName == 'new' || $actionName == 'create') {
-            return new Security_Form_Login();
+            
+            $form = new Security_Form_Login();
+            $form->setAction($this->view->Url(array(), 'new_security_session_path', true));
+            
+            return $form;
         }
         if ($actionName == 'delete' || $actionName == 'destroy') {
-            return new Security_Form_Logout();
+            
+            $form = new Security_Form_Logout();
+            $form->setAction($this->view->Url(array(), 'delete_security_session_path', true));
+            
+            return $form;
         }
     }
 }
