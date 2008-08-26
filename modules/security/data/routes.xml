@@ -32,7 +32,7 @@
         </defaults>
     </delete_security_session_path>
     <destroy_security_session_path>
-        <route>session/new/*</route>
+        <route>session/destroy/*</route>
         <defaults>
             <module>security</module>
             <controller>sessions</controller>
