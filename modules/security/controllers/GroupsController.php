@@ -6,7 +6,7 @@ class Security_GroupsController extends Security_Controller_Action_Backend
 	{
 	   $this->view->groups = Doctrine_Query::create()
 	                                        ->select('g.id, g.name')
-	                                        ->from('Group g')
+	                                        ->from('SecurityGroup g')
 	                                        ->orderby('g.name')
 	                                        ->execute();
 	}
@@ -98,14 +98,14 @@ class Security_GroupsController extends Security_Controller_Action_Backend
     {
         if ($group === null) {
             
-            $group = new Group();
+            $group = new SecurityGroup();
             
         } elseif ($group instanceof Doctrine_Record
                  || (is_numeric($group) && $group = $this->_getGroup($group))) {
             
             Doctrine_Query::create()
                             ->delete()
-                            ->from('GroupAcl ga')
+                            ->from('SecurityGroupAcl ga')
                             ->addWhere('ga.group_id = ?', current($group->identifier()))
                             ->execute();
                             
@@ -132,7 +132,7 @@ class Security_GroupsController extends Security_Controller_Action_Backend
                         
                         list($garbage, $privilegeId) = explode("_", $privilege);
                         
-                        $groupAcl = new GroupAcl();
+                        $groupAcl = new SecurityGroupAcl();
                         $groupAcl->group_id = $group->id;
                         $groupAcl->acl_id = $privilegeId;
                         $groupAcl->save();
@@ -148,6 +148,6 @@ class Security_GroupsController extends Security_Controller_Action_Backend
         if (!is_numeric($id)) {
             return false;
         }
-        return Doctrine_Query::create()->from('Group g')->addWhere('g.id = ?')->fetchOne(array($id));
+        return Doctrine_Query::create()->from('SecurityGroup g')->addWhere('g.id = ?')->fetchOne(array($id));
     }
 }
