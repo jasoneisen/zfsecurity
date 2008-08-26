@@ -81,19 +81,21 @@ class Security_AccountsController extends Security_Controller_Action_Backend
                 && $account = $this->_getAccount($id)) {
             
             $form->getSubForm('account')->getElement('identity')->setValue($account->{$identityColumn});
-            $groups = Security_Acl::getInstance()->getGroups();
             
-            $populate = array();
+            if ($groups = Security_Acl::getInstance()->getGroups()) {
             
-            foreach ($groups as $group) {
+                $populate = array();
                 
-                if (isset($account->Groups[$group->id])) {
+                foreach ($groups as $group) {
                     
-                    $populate[$group->id] = true;
+                    if (isset($account->Groups[$group->id])) {
+                        
+                        $populate[$group->id] = true;
+                    }
                 }
+                
+                $form->populate(array('groups'=>$populate));
             }
-            
-            $form->populate(array('groups'=>$populate));
         }
         
         return $form;
