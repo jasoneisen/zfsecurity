@@ -28,6 +28,9 @@ class Security_SessionsController extends Security_Controller_Action_Backend
     
     public function newAction()
     {
+        if ($this->_getParam('isViewAction')) {
+            $this->view->isViewAction = true;
+        }
         $this->view->form = $this->_getForm('post');
     }
     
