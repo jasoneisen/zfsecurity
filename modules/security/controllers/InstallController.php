@@ -36,9 +36,11 @@ class Security_InstallController extends Zend_Controller_Action
             
             try {
                 
-                if (Security_System::getInstance()->isInstalled()) {
-                
-                    $this->getHelper('Redirector')->gotoRoute(array('controller'=>'update', 'action'=>'index'), 'default');
+                if (Zend_Loader::isReadable('Security/System.php')) {
+                    if (Security_System::getInstance()->isInstalled()) {
+                    
+                        $this->getHelper('Redirector')->gotoRoute(array('controller'=>'update', 'action'=>'index'), 'default');
+                    }
                 }
             } catch (Exception $e) {}
         }
@@ -57,8 +59,22 @@ class Security_InstallController extends Zend_Controller_Action
     {
         // Check if bootstrap is setup properly and options path works
         
-        $form = new Security_Form_Options();
         $this->view->path = dirname(dirname(__FILE__)) . '/library';
+        
+        if (!Zend_Loader::isReadable('Security/Form/Options.php')) {
+            
+            $form = new Zend_Form();
+            $form->addElement('submit', 'submit', array('label'=>'submit'));
+            $this->view->form = $form;
+            
+            if ($this->getRequest()->isPost()) {
+                $this->view->errors = array("Security library is missing from the include path");
+            }
+            
+            return;
+        }
+        
+        $form = new Security_Form_Options();
         
         if (!$this->getRequest()->isPost()) {
             
@@ -183,8 +199,10 @@ class Security_InstallController extends Zend_Controller_Action
                 $this->view->errors = $install->getErrors();
             }
         }
-        $this->view->class = $this->_getSession('accountTableClass');
-        $this->view->column = Doctrine::getTable($this->_getSession('accountTableClass'))->getIdentifier();
+        $class = $this->_getSession('accountTableClass');
+        $this->view->class = $class;
+        $identifier = Doctrine::getTable($class)->getIdentifier();
+        $this->view->column = ($identifier == 'id') ? strtolower($class) . '_id' : $identifier;
         
         $form = new Zend_Form();
         $form->addElement('submit', 'submit', array('label' => 'Submit'));
