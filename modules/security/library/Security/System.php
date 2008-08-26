@@ -17,6 +17,13 @@ final class Security_System
     
     private function __construct($params = null)
     {
+        $front = Zend_Controller_Front::getInstance();
+        
+        if (!$front->hasPlugin('Security_Controller_Plugin_Loader')) {
+            
+            $front->registerPlugin(new Security_Controller_Plugin_Loader());
+        }
+        
         if (null === $params) {
             try {
                 if (!Zend_Loader::isReadable('SecurityOption.php')) {
@@ -68,13 +75,6 @@ final class Security_System
             
             $authStorage = new Zend_Session_Namespace('Security_Auth');
     		$authStorage->setExpirationSeconds($seconds);
-        }
-        
-        $front = Zend_Controller_Front::getInstance();
-        
-        if (!$front->hasPlugin('Security_Controller_Plugin_Loader')) {
-            
-            $front->registerPlugin(new Security_Controller_Plugin_Loader());
         }
     }
     
