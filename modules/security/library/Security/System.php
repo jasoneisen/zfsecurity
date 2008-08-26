@@ -57,10 +57,12 @@ final class Security_System
             $this->_params[$param['tag']] = (string) $param['value'];
         }
         
-        // For BC
-        //if (Zend_Loader::isReadable('Security/Account/GroupLink.php')) {
-        //    require_once 'Security/Account/GroupLink.php';
-        //}
+        $front = Zend_Controller_Front::getInstance();
+        
+        if (!$front->hasPlugin('Security_Controller_Plugin_Loader')) {
+            
+            $front->registerPlugin(new Security_Controller_Plugin_Loader());
+        }
     }
     
     public static function getInstance()
@@ -123,7 +125,7 @@ final class Security_System
     {
         switch ($name) {
             
-            case 'system':
+            case 'system':            
             case 'acl':
                 
                 $plugin = 'Security_Controller_Plugin_Auth';
