@@ -1,6 +1,6 @@
 <?php
 
-abstract class Security_Account
+class Security_Account
 {
     protected static $_instance = null;
 
@@ -34,7 +34,13 @@ abstract class Security_Account
         }
     }
     
-    abstract public static function getInstance();
+    public static function getInstance()
+    {
+        if (null === self::$_instance) {
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
     
     public function isLoggedIn()
     {

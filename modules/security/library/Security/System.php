@@ -43,12 +43,11 @@ final class Security_System
         
         foreach ($params as $param) {
             
-            if (strstr($param['tag'], 'enabled')) {
+            if (false !== strpos($param['tag'], 'enable')) {
                 
                 if ($param['value']) {
                 
-                    list($tag) = explode('enabled', $name, 2);
-                    die($tag);
+                    $tag = strtolower(substr($param['tag'], 6));
                     $this->enable($tag);
                     
                 }
@@ -169,7 +168,10 @@ final class Security_System
     
     public static function getActiveModel() {
         
-        $modelClass = Security_System::getInstance()->getParam('activeModelClass');
+        if (!$modelClass = Security_System::getInstance()->getParam('activeModelClass')) {
+            
+            $modelClass = "Security_Account";
+        }
         
         if (class_exists($modelClass)) {
             
