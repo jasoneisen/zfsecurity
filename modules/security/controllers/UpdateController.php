@@ -33,7 +33,7 @@ class Security_UpdateController extends Security_Controller_Action_Backend
                         
                         if ($priv) {
                            
-                           $acl = new Acl();
+                           $acl = new SecurityAcl();
                            $acl->module_id = $mPart->id;
                            $acl->resource_id = $rPart->id;
                            $acl->privilege_id = $pPart->id;
