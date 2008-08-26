@@ -77,7 +77,8 @@ class Security_AccountsController extends Security_Controller_Action_Backend
         $form = new Security_Form_Account();
         
         if (!$this->getRequest()->isPost()
-                && $account = $this->_getAccount($this->getRequest()->getParam('id'))) {
+                && ($id = $this->getRequest()->getParam('id'))
+                && $account = $this->_getAccount($id)) {
             
             $form->getSubForm('account')->getElement('identity')->setValue($account->{$identityColumn});
             $groups = Security_Acl::getInstance()->getGroups();
@@ -110,7 +111,10 @@ class Security_AccountsController extends Security_Controller_Action_Backend
         
         if ($account === null) {
             
-            $account = new Account();
+            // This is the only way to set the credential using treatment
+            $account = new $tableName();
+            $account->$identityColumn = $data['account']['identity'];
+            $account->save();
             
         } elseif ($account instanceof Doctrine_Record
                  || (is_numeric($account) && $account = $this->_getAccount($account))) {
