@@ -33,7 +33,7 @@ class Security_UpdateController extends Security_Controller_Action_Backend
                         
                         if ($priv) {
                            
-                           $acl = new Acl();
+                           $acl = new SecurityAcl();
                            $acl->module_id = $mPart->id;
                            $acl->resource_id = $rPart->id;
                            $acl->privilege_id = $pPart->id;
@@ -66,9 +66,9 @@ class Security_UpdateController extends Security_Controller_Action_Backend
     {
         if (!isset($this->_aclParts[$name])) {
             
-            if (!$aclPart = Doctrine::getTable('AclPart')->findOneByName($name)) {
+            if (!$aclPart = Doctrine::getTable('SecurityAclPart')->findOneByName($name)) {
                 
-                $aclPart = new AclPart();
+                $aclPart = new SecurityAclPart();
                 $aclPart->name = $name;
                 $aclPart->save();
             }

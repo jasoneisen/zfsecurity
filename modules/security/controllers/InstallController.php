@@ -33,8 +33,7 @@ class Security_InstallController extends Security_Controller_Action_Backend
                 
                 if (Security_System::getInstance()->isInstalled()) {
                 
-                    $this->getHelper('Redirector')->gotoRoute(array('module'=>'security','controller'=>'update'), 'default');
-                
+                    $this->getHelper('Redirector')->gotoRoute(array('controller'=>'update', 'action'=>'index'), 'default');
                 }
             } catch (Exception $e) {}
         }
@@ -179,6 +178,7 @@ class Security_InstallController extends Security_Controller_Action_Backend
                 $this->view->errors = $install->getErrors();
             }
         }
+        $this->view->class = $this->_getSession('accountTableClass');
         $this->view->column = Doctrine::getTable($this->_getSession('accountTableClass'))->getIdentifier();
         
         $form = new Zend_Form();

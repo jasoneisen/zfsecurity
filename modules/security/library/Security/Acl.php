@@ -23,7 +23,7 @@ class Security_Acl extends Zend_Acl
     protected function _initialize() {
 	
 		$acls = Doctrine_Query::create()
-					->from('Acl a')
+					->from('SecurityAcl a')
 					->innerJoin('a.Module m')
 					->innerJoin('a.Resource r')
 					->innerJoin('a.Privilege p')

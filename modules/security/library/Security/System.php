@@ -43,26 +43,34 @@ final class Security_System
         
         foreach ($params as $param) {
             
-            if (strstr($param['tag'], 'enabled')) {
+            if (false !== strpos($param['tag'], 'enable')) {
                 
                 if ($param['value']) {
                 
-                    list($tag) = explode('enabled', $name, 2);
-                    die($tag);
+                    $tag = strtolower(substr($param['tag'], 6));
                     $this->enable($tag);
                     
                 }
                 
-            } else {
-                
-                $this->_params[$param['tag']] = (string) $param['value'];
             }
+                
+            $this->_params[$param['tag']] = (string) $param['value'];
         }
         
-        // For BC
-        //if (Zend_Loader::isReadable('Security/Account/GroupLink.php')) {
-        //    require_once 'Security/Account/GroupLink.php';
-        //}
+        Zend_Auth::getInstance()->setStorage(new Zend_Auth_Storage_Session('Security_Auth'));
+        
+        if (($seconds = $this->getParam('sessionExpiration')) && !empty($seconds)) {
+            
+            $authStorage = new Zend_Session_Namespace('Security_Auth');
+    		$authStorage->setExpirationSeconds($seconds);
+        }
+        
+        $front = Zend_Controller_Front::getInstance();
+        
+        if (!$front->hasPlugin('Security_Controller_Plugin_Loader')) {
+            
+            $front->registerPlugin(new Security_Controller_Plugin_Loader());
+        }
     }
     
     public static function getInstance()
@@ -125,7 +133,7 @@ final class Security_System
     {
         switch ($name) {
             
-            case 'system':
+            case 'system':            
             case 'acl':
                 
                 $plugin = 'Security_Controller_Plugin_Auth';
@@ -169,7 +177,10 @@ final class Security_System
     
     public static function getActiveModel() {
         
-        $modelClass = Security_System::getInstance()->getParam('activeModelClass');
+        if (!$modelClass = Security_System::getInstance()->getParam('activeModelClass')) {
+            
+            $modelClass = "Security_Account";
+        }
         
         if (class_exists($modelClass)) {
             
