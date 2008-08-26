@@ -21,6 +21,6 @@ class Security_Form_Login extends Security_Form_Rest
             'required' => true,
             'label' => Security_System::getInstance()->getParam('loginCredentialLabel') .':'));
         
-        $this->addElement('submit', 'submit', array('label' => 'Submit'));
+        $this->addElement('submit', 'submit', array('label' => 'Login'));
     }
 }
