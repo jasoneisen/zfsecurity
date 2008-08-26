@@ -7,19 +7,19 @@ class Security_SessionsController extends Security_Controller_Action_Backend
         parent::init();
         
         // We don't forward if the parent has
-        //if ($this->getRequest()->isDispatched()) {
-        //
-        //    $actionName = $this->getRequest()->getActionName();
-        //    
-        //    // Enforce this even if ACL does not
-        //    if (($actionName == 'new' || $actionName == 'create') && Security_System::getActiveModel()->isLoggedIn()) {
-        //        $this->getHelper('Redirector')->gotoRoute(array(), 'default', true);
-        //    }
-        //    
-        //    if (($actionName == 'delete' || $actionName == 'destroy') && !Security_System::getActiveModel()->isLoggedIn()) {
-        //        $this->getHelper('Redirector')->gotoRoute(array(), 'new_security_session_path', true);
-        //    }
-        //}
+        if ($this->getRequest()->isDispatched()) {
+        
+            $actionName = $this->getRequest()->getActionName();
+            
+            // Enforce this even if ACL does not
+            if (($actionName == 'new' || $actionName == 'create') && null !== Security_System::getActiveAccount()) {
+                $this->getHelper('Redirector')->gotoRoute(array(), 'default', true);
+            }
+            
+            if (($actionName == 'delete' || $actionName == 'destroy') && null !== Security_System::getActiveAccount()) {
+                $this->getHelper('Redirector')->gotoRoute(array(), 'new_security_session_path', true);
+            }
+        }
     }
     public function indexActon()
     {

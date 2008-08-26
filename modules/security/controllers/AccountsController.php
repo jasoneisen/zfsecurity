@@ -82,7 +82,7 @@ class Security_AccountsController extends Security_Controller_Action_Backend
             
             $form->getSubForm('account')->getElement('identity')->setValue($account->{$identityColumn});
             
-            if ($groups = Security_Acl::getInstance()->getGroups()) {
+            if ($groups = Doctrine::getTable('SecurityGroup')->findAll()) {
             
                 $populate = array();
                 

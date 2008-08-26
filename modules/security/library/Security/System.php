@@ -4,6 +4,10 @@ final class Security_System
 {
     private static $_instance = null;
     
+    private static $_aclInstance = null;
+    
+    private static $_activeAccount = null;
+    
     private $_installed = null;
     
     private $_params =      array();
@@ -26,14 +30,10 @@ final class Security_System
         
         if (null === $params) {
             try {
-                if (!Zend_Loader::isReadable('SecurityOption.php')) {
+                if (!Zend_Loader::isReadable('SecurityOption.php')
+                    || !$params = Doctrine::getTable('SecurityOption')->findAll()) {
                     return;
-                }
-                    
-                if (!$params = Doctrine::getTable('SecurityOption')->findAll()) {
-                    return;
-                }
-                
+                }                
             } catch (Exception $e) {
                 return;
             }
@@ -44,12 +44,8 @@ final class Security_System
                 $params = $params->toArray();
         }
             
-        if (!is_array($params)) {
+        if (!is_array($params) || empty($params)) {
                 
-            throw new Security_Exception('Params must be sent as an array');
-        }
-        
-        if (empty($params)) {
             return;
         }
         
@@ -61,11 +57,8 @@ final class Security_System
                 
                     $tag = strtolower(substr($param['tag'], 6));
                     $this->enable($tag);
-                    
                 }
-                
             }
-                
             $this->_params[$param['tag']] = (string) $param['value'];
         }
         
@@ -96,11 +89,29 @@ final class Security_System
         self::$_instance = new Security_System($params);
     }
     
+    public static function getAclInstance()
+    {
+        if (null === self::$_aclInstance) {
+            self::$_aclInstance = new Security_Acl();
+        }
+        
+        return self::$_aclInstance;
+    }
+    
+    public static function getActiveAccount()
+    {
+        if (null === self::$_activeAccount) {
+            self::$_activeAccount = Security_Account::fromAuth();
+        }
+        
+        return self::$_activeAccount;
+    }
+    
     public function isEnabled($name = 'system')
     {
         if ($this->_enabled['system']) {
             
-            if (array_key_exists($name, $this->_enabled)) {
+            if (isset($this->_enabled[$name])) {
                 
                 return $this->_enabled[$name];
             }
@@ -179,22 +190,6 @@ final class Security_System
     //    
     //    return $system;
     //}
-    
-    public static function getActiveModel() {
-        
-        if (!$modelClass = Security_System::getInstance()->getParam('activeModelClass')) {
-            
-            $modelClass = "Security_Account";
-        }
-        
-        if (class_exists($modelClass)) {
-            
-            if ($model = call_user_func($modelClass.'::getInstance')) {
-                return $model;
-            }
-        }
-        return null;
-    }
     
     public function getParam($name)
     {

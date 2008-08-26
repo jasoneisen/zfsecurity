@@ -4,20 +4,16 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 {
     public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
-		$secSys = Security_System::getInstance();
-		
-		if (!$secSys->isEnabled('acl')) {
-			return;
+		if (!$acl = Security_System::getAclInstance()) {
+		    return;
 		}
 		
-		if (!isset($secSys->getActiveModel()->Groups) || !$secSys->getActiveModel()->Groups->count()) {
+		if ((!$account = Security_System::getActiveAccount()) || !$account->Groups->count()) {
 		    
 		    $groups[] = (object) array('name' => 'Anonymous');
 		} else {
-		    $groups = $secSys->getActiveModel()->Groups;
+		    $groups = $account->Groups;
 		}
-		
-		$acl = Security_Acl::getInstance();
 		
 		foreach ($groups as $group) {
         
@@ -43,16 +39,19 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
         
 		if (isset($error)) {
 		    
-		    if (!Security_System::getActiveModel()->isLoggedIn()) {
-		        //die(print_r(Zend_Controller_Front::getInstance()->getRouter()->getRoutes()));
+		    if (!$account instanceof Doctrine_Record) {
+		        
 		        $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector');
 		        $redirector->gotoRouteAndExit(array(), 'new_security_session_path', true);
 
 		    } else {
 		    
-		        $module = $secSys->getParam('useSecurityErrorController') ? 'security' : 'default';
+		        if (!$secSys->getParam('useSecurityErrorController')) {
 		            
-			    $request->setModuleName($module);
+		            throw new Security_Exception($error);
+	            }
+		            
+			    $request->setModuleName('security');
 			    $request->setControllerName('error');
 			    $request->setActionName('error');
 			    $request->setParam('error', $error);

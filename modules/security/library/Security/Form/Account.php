@@ -28,13 +28,13 @@ class Security_Form_Account extends Security_Form_Rest
         
         $this->addSubForm($accountForm, 'account');
         
-        if ($groups = Security_Acl::getInstance()->getGroups()) {
+        if ($groups = Doctrine::getTable('SecurityGroup')->findAll()) {
             
             $groupForm = new Zend_Form_SubForm(array('legend' => 'Groups'));
             
-            foreach ($groups as $groupName => $group) {
+            foreach ($groups as $group) {
                 
-                $groupForm->addElement('checkbox', $group->id, array('label' => $groupName));
+                $groupForm->addElement('checkbox', $group->id, array('label' => $group->name));
             }
             
             $this->addSubForm($groupForm, 'groups');
