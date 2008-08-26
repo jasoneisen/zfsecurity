@@ -52,10 +52,9 @@ final class Security_System
                     
                 }
                 
-            } else {
-                
-                $this->_params[$param['tag']] = (string) $param['value'];
             }
+                
+            $this->_params[$param['tag']] = (string) $param['value'];
         }
         
         // For BC

@@ -92,10 +92,19 @@ class Security_Form_Options extends Zend_Form
                 
                 if ($querySystem === true) {
                     
-                    $this->getElement($name)->setValue($secSys->getParam($name));
-                    if ($config->type == 'string') {
-                        $this->getElement($name)->setAttrib('size', strlen($secSys->getParam($name))+5);
+                    if ($config->type == 'bool' && $secSys->getParam($name)) {
+                        
+                        $this->getElement($name)->setChecked(true);
+                    
+                    } elseif ($config->type == 'string') {
+                        
+                        $this->getElement($name)->setAttrib('size', strlen($secSys->getParam($name))+5)->setValue($secSys->getParam($name));
+                            
+                    } else {
+                        
+                        $this->getElement($name)->setValue($secSys->getParam($name));
                     }
+                    
                 }
             }
         }
