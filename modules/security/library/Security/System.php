@@ -19,9 +19,14 @@ final class Security_System
     {
         if (null === $params) {
             try {
+                if (!Zend_Loader::isReadable('SecurityOption.php')) {
+                    return;
+                }
+                    
                 if (!$params = Doctrine::getTable('SecurityOption')->findAll()) {
                     return;
                 }
+                
             } catch (Exception $e) {
                 return;
             }
