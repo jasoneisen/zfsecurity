@@ -59,7 +59,7 @@ final class Security_System
         
         Zend_Auth::getInstance()->setStorage(new Zend_Auth_Storage_Session('Security_Auth'));
         
-        if ($seconds = $this->getParam('sessionExpiration')) {
+        if (($seconds = $this->getParam('sessionExpiration')) && !empty($seconds)) {
             
             $authStorage = new Zend_Session_Namespace('Security_Auth');
     		$authStorage->setExpirationSeconds($seconds);
