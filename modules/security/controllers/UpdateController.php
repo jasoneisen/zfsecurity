@@ -66,7 +66,7 @@ class Security_UpdateController extends Security_Controller_Action_Backend
     {
         if (!isset($this->_aclParts[$name])) {
             
-            if (!$aclPart = Doctrine::getTable('AclPart')->findOneByName($name)) {
+            if (!$aclPart = Doctrine::getTable('SecurityAclPart')->findOneByName($name)) {
                 
                 $aclPart = new AclPart();
                 $aclPart->name = $name;

@@ -33,7 +33,7 @@ class Security_InstallController extends Security_Controller_Action_Backend
                 
                 if (Security_System::getInstance()->isInstalled()) {
                 
-                    $this->getHelper('Redirector')->gotoRoute(array('module'=>'security','controller'=>'update'), 'default');
+                    $this->getHelper('Redirector')->gotoRoute(array('controller'=>'update', 'action'=>'index'), 'default');
                 
                 }
             } catch (Exception $e) {}
