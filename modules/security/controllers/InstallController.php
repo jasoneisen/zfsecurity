@@ -127,7 +127,7 @@ class Security_InstallController extends Zend_Controller_Action
         $form->getElement('migrationPath')->setAttrib('size', strlen($migrationPath))
                                           ->setValue($migrationPath);
         
-        if ($this->getRequest()->isPost()) {
+        if ($this->getRequest()->isPost() && $form->isValid($this->getRequest()->getPost())) {
             
             $install = new Security_Install();
             
