@@ -57,6 +57,14 @@ final class Security_System
             $this->_params[$param['tag']] = (string) $param['value'];
         }
         
+        Zend_Auth::getInstance()->setStorage(new Zend_Auth_Storage_Session('Security_Auth'));
+        
+        if ($seconds = $this->getParam('sessionExpiration')) {
+            
+            $authStorage = new Zend_Session_Namespace('Security_Auth');
+    		$authStorage->setExpirationSeconds($seconds);
+        }
+        
         $front = Zend_Controller_Front::getInstance();
         
         if (!$front->hasPlugin('Security_Controller_Plugin_Loader')) {
