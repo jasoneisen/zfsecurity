@@ -5,7 +5,7 @@
  *
  * @todo document me
  * @package unknown
- * @author jaeisenmenger@edrivemedia.com
+ * @author jasoneisen@gmail.com
  **/
 class Security_Form_Rest extends Security_Form
 {
@@ -14,7 +14,7 @@ class Security_Form_Rest extends Security_Form
 	 *
 	 * @todo document me
 	 * @return unknown
-	 * @author jaeisenmenger@edrivemedia.com
+	 * @author jasoneisen@gmail.com
 	 **/
 	public function init()
 	{
