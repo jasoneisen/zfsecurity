@@ -72,28 +72,16 @@
         <description>Enables / Disables the entire system.  This setting overrides all other enable / disable settings</description>
         <required>1</required>
     </enableSystem>
-    <migrationPath>
-        <label>Migration Path</label>
-        <type>string</type>
-        <description>Path to the security module's migrations</description>
-        <required>1</required>
-    </migrationPath>
-    <schemaPath>
-        <label>Schema Path</label>
-        <type>string</type>
-        <description>Path to the security module's schema.yml file</description>
-        <required>1</required>
-    </schemaPath>
     <modelPath>
         <label>Model Path</label>
         <type>string</type>
         <description>Path where the application-wide models are stored</description>
         <required>1</required>
     </modelPath>
-    <optionsPath>
-        <label>Options Path</label>
+    <dataPath>
+        <label>Data Path</label>
         <type>string</type>
-        <description>Path to the security module's options.xml file</description>
+        <description>Path to the security module's data directory</description>
         <required>1</required>
-    </optionsPath>
+    </dataPath>
 </options>

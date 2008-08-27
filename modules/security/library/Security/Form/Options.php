@@ -4,11 +4,11 @@ class Security_Form_Options extends Zend_Form
 {
     protected $_isInstall = false;
     
-    protected $_optionsPath = null;
+    protected $_dataPath = null;
     
     public function init()
     {
-        $this->addElement('text', 'optionsPath', array('label' => 'Options path', 'required' => true));
+        $this->addElement('text', 'dataPath', array('label' => 'Data path', 'required' => true));
         
         $this->addElement('submit', 'submit', array('label' => 'Submit', 'order' => 100));
     }
@@ -23,26 +23,26 @@ class Security_Form_Options extends Zend_Form
         return $this->_isInstall;
     }
     
-    public function setOptionsPath($path)
+    public function setDataPath($path)
     {
-        $this->_optionsPath = $path;
+        $this->_dataPath = $path;
     }
     
-    public function getOptionsPath()
+    public function getDataPath()
     {
-        if (null === $this->_optionsPath) {
-            throw new Security_Exception("Options path has not been set");
+        if (null === $this->_dataPath) {
+            throw new Security_Exception("Data path has not been set");
         }
-        return $this->_optionsPath;
+        return $this->_dataPath;
     }
     
-    public function buildFromOptionsPath($querySystem = true, $options = array())
+    public function buildFromDataPath($querySystem = true, $options = array())
     {
-        $optionsPath = $this->getOptionsPath();
+        $optionsPath = $this->getDataPath() . DIRECTORY_SEPARATOR . 'options.xml';
         
         $configs = new Zend_Config_Xml($optionsPath);
         
-        $this->removeElement('optionsPath');
+        $this->removeElement('dataPath');
         
         if ($querySystem === true) {
             $secSys = Security_System::getInstance();
