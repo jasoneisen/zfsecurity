@@ -105,8 +105,8 @@ class Security_InstallController extends Zend_Controller_Action
         
         if (!$this->getRequest()->isPost()) {
             
-            $dataPath = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'data';
-            $form->getElement('dataPath')->setValue($dataPath)->setAttrib('size', strlen($dataPath));
+            $optionsPath = dirname(dirname(__FILE__)) . '/data/options.xml';
+            $form->getElement('optionsPath')->setValue($optionsPath)->setAttrib('size', strlen($optionsPath));
             $this->view->form = $form;
             return;
             
@@ -120,11 +120,11 @@ class Security_InstallController extends Zend_Controller_Action
                     
                     if ($install->bootstrapIsSetup()) {
                         
-                        $dataPath = $form->getValue('dataPath');
+                        $optionsPath = $form->getValue('optionsPath');
 
-                        if ($install->dataPathCorrect($dataPath)) {
+                        if ($install->optionsPathCorrect($optionsPath)) {
                             
-                            $this->_setSession('dataPath', $dataPath);
+                            $this->_setSession('optionsPath', $optionsPath);
                             
                             $this->getHelper('Redirector')->gotoRoute(array('action'=>'step-two'), 'default'); 
                         }
@@ -137,7 +137,7 @@ class Security_InstallController extends Zend_Controller_Action
                 }
             }
             
-            $form->getElement('dataPath')->setAttrib('size', strlen($form->getValue('dataPath')));
+            $form->getElement('optionsPath')->setAttrib('size', strlen($form->getValue('optionsPath')));
         }
         
         $this->view->form = $form;
@@ -146,14 +146,21 @@ class Security_InstallController extends Zend_Controller_Action
     public function stepTwoAction()
     {
         // Check DB privileges
-        $migrationPath = $this->_getSession('dataPath') . DIRECTORY_SEPARATOR . 'migrations';
+        $migrationPath = dirname(dirname(__FILE__)) . '/data/migrations';
         
-        if ($this->getRequest()->isPost()) {
+        $form = $this->_getForm();
+        $form->buildFromOptionsPath(false, array('migrationPath'));
+        
+        $form->getElement('migrationPath')->setAttrib('size', strlen($migrationPath))
+                                          ->setValue($migrationPath);
+        
+        if ($this->getRequest()->isPost() && $form->isValid($this->getRequest()->getPost())) {
             
             $install = new Security_Install();
             
-            if ($install->hasRequiredDbAccess($migrationPath) {
+            if ($install->hasRequiredDbAccess($form->getValue('migrationPath'))) {
                 
+                $this->_setSession('migrationPath', $form->getValue('migrationPath'));
                 $this->getHelper('Redirector')->gotoRoute(array('action'=>'step-three'), 'default');
                 
             } else {
@@ -161,23 +168,23 @@ class Security_InstallController extends Zend_Controller_Action
                 $this->view->errors = $install->getErrors();
             }
         }
-        $form = new Zend_Form();
-        $form->addElement('submit', 'submit', array('label'=>'submit'));
         $this->view->form = $form;
     }
     
     public function stepThreeAction()
     {
         // Generate Models
-        $modelPath = dirname(dirname(dirname(dirname(__FILE__)))) . DIRECTORY_SEPARATOR . 'models';
-        $schemaPath = $this->_getSession('dataPath') . DIRECTORY_SEPARATOR . 'schema.yml';
+        $modelPath = dirname(dirname(dirname(dirname(__FILE__)))) . '/models';
+        $schemaPath = dirname(dirname(__FILE__)) . '/data/schema.yml';
         
         $form = $this->_getForm();
-        $form->buildFromDataPath(false, array('accountTableClass',
+        $form->buildFromOptionsPath(false, array('accountTableClass',
                                                  'accountTableAlias',
-                                                 'modelPath'));
+                                                 'modelPath',
+                                                 'schemaPath'));
         
         $form->getElement('modelPath')->setAttrib('size', strlen($modelPath))->setValue($modelPath);
+        $form->getElement('schemaPath')->setAttrib('size', strlen($schemaPath))->setValue($schemaPath);
         
         if ($this->getRequest()->isPost() && $form->isValid($this->getRequest()->getPost())) {
             
@@ -186,11 +193,12 @@ class Security_InstallController extends Zend_Controller_Action
             if ($install->generateModels($form->getValue('accountTableClass'),
                                          $form->getValue('accountTableAlias'),
                                          $form->getValue('modelPath'),
-                                         $schemaPath)) {
+                                         $form->getValue('schemaPath'))) {
                 
                 $this->_setSession('accountTableClass', $form->getValue('accountTableClass'));
                 $this->_setSession('accountTableAlias', $form->getValue('accountTableAlias'));
                 $this->_setSession('modelPath', $form->getValue('modelPath'));
+                $this->_setSession('schemaPath', $form->getValue('schemaPath'));
                 
                 $this->getHelper('Redirector')->gotoRoute(array('action'=>'step-four'), 'default');
                 
@@ -235,7 +243,7 @@ class Security_InstallController extends Zend_Controller_Action
             
             $install = new Security_Install();
             
-            if ($install->executeSqlFromModels($this->_getSession('accountTableClass'), $this->_getSession('dataPath'))) {
+            if ($install->executeSqlFromModels($this->_getSession('accountTableClass'), $this->_getSession('migrationPath'))) {
                 
                 $this->getHelper('Redirector')->gotoRoute(array('action'=>'step-six'), 'default');
                 
@@ -253,7 +261,7 @@ class Security_InstallController extends Zend_Controller_Action
     {
         // Create / save options
         $form = $this->_getForm();
-        $form->buildFromDataPath(false);
+        $form->buildFromOptionsPath(false);
         
         if ($this->getRequest()->isPost() && $form->isValid($this->getRequest()->getPost())) {
             
@@ -273,7 +281,7 @@ class Security_InstallController extends Zend_Controller_Action
             return;
         }
         
-        $form->buildFromDataPath(false, array('isInstall' => true));
+        $form->buildFromOptionsPath(false, array('isInstall' => true));
         
         foreach($this->_getSession()->getIterator() as $name => $value) {
             

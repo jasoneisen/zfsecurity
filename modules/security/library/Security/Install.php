@@ -32,20 +32,6 @@ class Security_Install
         return true;
     }
     
-    public function verifySettings(array $settings = array())
-    {
-        foreach ($settings as $name => $value) {
-            
-            switch ($name) {
-                
-                case 'dataPath':
-                    
-                break;
-                
-            }
-        }
-    }
-    
     public function optionsPathCorrect($path)
     {
         if (!Zend_Loader::isReadable($path)) {
