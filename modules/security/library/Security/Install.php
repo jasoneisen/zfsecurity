@@ -22,7 +22,7 @@ class Security_Install
     public function bootstrapIsSetup()
     {
         try {
-            $secSys = Security_System::getInstance();
+            $secSys = Security::isInitialized();
 
         } catch (Security_Exception $e) {
 

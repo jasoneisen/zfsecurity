@@ -1,12 +1,5 @@
 <?php echo $this->partial('heading.phtml', array('heading' => 'Step One: Bootstrap and Options')); ?>
-<?php if (!empty($this->errors)): ?>
-<p>The following error(s) occured:</p>
-<ul class="error">
-<?php foreach ($this->errors as $error): ?>
-    <li class="error"><?php echo $error; ?></li>
-<?php endforeach; ?>
-</ul>
-<?php endif; ?>
+<?php echo $this->partial('errors.phtml', array('errors' => $this->errors)); ?>
 <p>The installer has determined that the security library to be in the following directory.
     Please add this to your include path:</p>
 <br />
@@ -19,7 +12,7 @@
     and configured your front controller.</p>
 <br />
 <pre>
-Security_System::start();
+Security::init();
 </pre>
 <br />
 <p>Last, the installer needs to load options from it's included xml file.</p>

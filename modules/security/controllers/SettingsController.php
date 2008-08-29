@@ -15,9 +15,22 @@ class Security_SettingsController extends Security_Controller_Action_Backend
     
     protected function _generateForm()
 	{
-	    $form = new Security_Form_Options();
-	    $form->setOptionsPath(Security_System::getInstance()->getParam('optionsPath'));
-	    $form->buildFromOptionsPath();
+	    $form = new Security_Form_Settings();
+	    
+	    $params = Security::getParams();
+	    
+	    foreach ($params as $name => $value) {
+            
+            if ($element = $form->getElement($name)) {
+                
+                if ($element instanceof Zend_Form_Element_Text) {
+
+                    $element->setAttrib('size', strlen($value));
+                }
+                
+                $element->setValue($value);
+            }
+        }
 	    
 	    return $form;
 	}
@@ -40,6 +53,7 @@ class Security_SettingsController extends Security_Controller_Action_Backend
 			return true;
 		
 		} catch (Exception $e) {
+		    die($e);
 			return false;
 		}
 	}

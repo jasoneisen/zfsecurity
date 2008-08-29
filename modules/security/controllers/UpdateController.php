@@ -80,7 +80,17 @@ class Security_UpdateController extends Security_Controller_Action_Backend
     protected function _getAclChanges()
     {
         $gen = new Security_Acl_Generator();
-        $acls = Security_Acl::getInstance()->getAcl();
+        
+        // ACL might not be disabled, so we have to run our own query
+        $acls = Doctrine_Query::create()
+                    ->from('SecurityAcl a')
+                    ->innerJoin('a.Module m')
+                    ->innerJoin('a.Resource r')
+                    ->innerJoin('a.Privilege p')
+                    ->leftJoin('a.Groups g INDEXBY g.id')
+                    ->orderby('m.name, r.name, p.name')
+                    ->execute();
+                    
         $modules = array();
         
         foreach ($acls as $acl) {

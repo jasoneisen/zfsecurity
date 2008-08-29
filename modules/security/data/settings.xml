@@ -1,16 +1,13 @@
 <?xml version="1.0"?>
 <options>
-    <activeModelClass>
-        <label>Active Model Class</label>
-        <type>string</type>
-        <description>Class name of the model used to extend Security_Account</description>
-        <required>0</required>
-    </activeModelClass>
     <accountTableClass>
         <label>Account Table Class</label>
         <type>string</type>
         <description>Class name of the accounts table used in this application</description>
         <required>1</required>
+        <validators>
+            <accountTableClass />
+        </validators>
     </accountTableClass>
     <accountTableAlias>
         <label>Account Table Plural Alias</label>
@@ -29,6 +26,11 @@
         <type>string</type>
         <description>Column of the accounts table in which to check the identity (username)</description>
         <required>1</required>
+        <validators>
+            <columnExists>
+                <options>accountTableClass</options>
+            </columnExists>
+        </validators>
     </loginIdentityColumn>
     <loginCredentialLabel>
         <label>Login Credential Label</label>
@@ -41,12 +43,20 @@
         <type>string</type>
         <description>Column of the accounts table in which to check the credential (password)</description>
         <required>1</required>
+        <validators>
+            <columnExists>
+                <options>accountTableClass</options>
+            </columnExists>
+        </validators>
     </loginCredentialColumn>
     <loginCredentialTreatment>
         <label>Login Credential Treatment</label>
         <type>string</type>
-        <description>Treatment of the credential input when authorizing</description>
+        <description>Treatment of the credential input when authorizing ex: md5(?)</description>
         <required>0</required>
+        <validators>
+            <loginCredentialTreatment />
+        </validators>
     </loginCredentialTreatment>
     <sessionExpiration>
         <label>Session Expiration Time(in seconds)</label>
@@ -77,11 +87,17 @@
         <type>string</type>
         <description>Path where the application-wide models are stored</description>
         <required>1</required>
+        <validators>
+            <modelPath />
+        </validators>
     </modelPath>
     <dataPath>
         <label>Data Path</label>
         <type>string</type>
         <description>Path to the security module's data directory</description>
         <required>1</required>
+        <validators>
+            <dataPath />
+        </validators>
     </dataPath>
 </options>

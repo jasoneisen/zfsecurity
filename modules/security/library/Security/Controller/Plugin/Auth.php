@@ -4,11 +4,11 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 {
     public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
-		if (!$acl = Security_System::getAclInstance()) {
+		if (!Security::isEnabled('acl') || !$acl = Security::getAclInstance()) {
 		    return;
 		}
 		
-		if ((!$account = Security_System::getActiveAccount()) || !$account->Groups->count()) {
+		if ((!$account = Security::getActiveAccount()) || $account instanceof Doctrine_Null) {
 		    
 		    $groups[] = (object) array('name' => 'Anonymous');
 		} else {
@@ -32,7 +32,7 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		    	return;
 		    	
 		    } catch (Exception $e) {
-		    	
+		    	die($e);
 		    	$error = $e->getMessage();
 		    }
 	    }

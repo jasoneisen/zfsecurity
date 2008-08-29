@@ -1,12 +1,5 @@
 <?php echo $this->partial('heading.phtml', array('heading' => 'Step Six: Save Configuration')); ?>
-<?php if (!empty($this->errors)): ?>
-<p>The following error(s) occured:</p>
-<ul class="error">
-<?php foreach ($this->errors as $error): ?>
-    <li class="error"><?php echo $error; ?></li>
-<?php endforeach; ?>
-</ul>
-<?php endif; ?>
+<?php echo $this->partial('errors.phtml', array('errors' => $this->errors)); ?>
 <p>Please fill out the following information.  Values that have been previously
     entered during the install are already populated for you.  Some fields are
     disabled, as they should not be entered until the ACL has been populated.</p>

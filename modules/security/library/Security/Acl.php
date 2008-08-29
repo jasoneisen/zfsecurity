@@ -2,20 +2,32 @@
  
 class Security_Acl extends Zend_Acl
 { 
-    public function construct()
+    protected $_aclResultObject = null;
+    
+    public function __construct()
     {
-        if (!Security_System::getInstance()->isEnabled('acl')) {
+        if (!$this->has('security_error')) {
+            $this->add(new Zend_Acl_Resource('security_error'));
+        }
+        
+        if (!$this->has('security_sessions')) {
+            $this->add(new Zend_Acl_Resource('security_sessions'));
+        }
+        
+        if (!$this->has('default_error')) {
+            $this->add(new Zend_Acl_Resource('default_error'));
+        }
+        
+        if (!$this->hasRole('Anonymous')) {
+            $this->addRole(new Zend_Acl_Role('Anonymous'));
+            $this->allow('Anonymous', 'security_sessions', array('new','create'));
+        }
+        
+        if (!Security::isEnabled('acl')) {
             return;
         }
         
-        $acls = Doctrine_Query::create()
-                    ->from('SecurityAcl a')
-                    ->innerJoin('a.Module m')
-                    ->innerJoin('a.Resource r')
-                    ->innerJoin('a.Privilege p')
-                    ->leftJoin('a.Groups g INDEXBY g.id')
-                    ->orderby('m.name, r.name, p.name')
-                    ->execute();
+        $acls = $this->getAclResultObject();
         
         foreach ($acls as $acl) {
            
@@ -35,30 +47,13 @@ class Security_Acl extends Zend_Acl
             }
         }
         
-        if (!$this->has('security_error')) {
-            $this->add(new Zend_Acl_Resource('security_error'));
-        }
-        
-        if (!$this->has('security_sessions')) {
-            $this->add(new Zend_Acl_Resource('security_sessions'));
-        }
-        
-        if (!$this->has('default_error')) {
-            $this->add(new Zend_Acl_Resource('default_error'));
-        }
-        
-        if (!$this->hasRole('Anonymous')) {
-            $this->addRole(new Zend_Acl_Role('Anonymous'));
-            $this->allow('Anonymous', 'security_sessions', array('new','create'));
-        }
-        
         $this->allow(null, 'security_error');
         $this->allow(null, 'default_error');
     }
     
     public function isAllowed($group = null, $resource = null, $privilege = null)
     {
-        if (Security_System::getInstance()->isEnabled('acl')) {
+        if (Security::isEnabled('acl')) {
             
             if ($group instanceof Doctrine_Record) {
                 
@@ -88,5 +83,21 @@ class Security_Acl extends Zend_Acl
             }
         }
         return false;
+    }
+    
+    public function getAclResultObject()
+    {
+        if (null === $this->_aclResultObject) {
+            
+            $this->_aclResultObject = Doctrine_Query::create()
+                        ->from('SecurityAcl a')
+                        ->innerJoin('a.Module m')
+                        ->innerJoin('a.Resource r')
+                        ->innerJoin('a.Privilege p')
+                        ->leftJoin('a.Groups g INDEXBY g.id')
+                        ->orderby('m.name, r.name, p.name')
+                        ->execute();
+        }
+        return $this->_aclResultObject;
     }
 }

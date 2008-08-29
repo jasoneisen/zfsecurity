@@ -10,6 +10,8 @@ final class Security
     
     private static $_installed = null;
     
+    private static $_initialized = false;
+    
     private static $_params = array();
     
     private static $_plugins = array('Security_Controller_Plugin_Auth',
@@ -17,6 +19,12 @@ final class Security
     
     public static function init($params = array())
     {
+        if (true === self::$_initialized) {
+            throw new Security_Exception("Security::init() has already been called");
+        }
+        
+        self::$_initialized = true;
+        
         if (empty($params) && Zend_Loader::isReadable('SecurityOption.php')) {
             try {
                 $params = Doctrine_Query::create()
@@ -39,8 +47,8 @@ final class Security
         self::setParams($params);
         
         self::_registerPlugins();
+        self::_addRoutes();
         self::_setAuthStorage();
-        self::_loadRoutes();
     }
     
     public static function getAclInstance()
@@ -66,11 +74,11 @@ final class Security
                 $column = Doctrine::getTable($class)->getIdentifier();
 
                 if (!empty($identity->$column)) {
-
-                    self::getAccountQuery()
-                        ->addWhere('a.'. $column .'= ?')
-                        ->fetchOne(array($identity->{$column}));
-
+                    
+                    $record = self::getAccountQuery()
+                        ->addWhere('a.'. $column .' = ?')
+                        ->fetchOne(array($identity->$column));
+                    
                     self::$_activeAccount = $record;
                 }
             }
@@ -86,7 +94,9 @@ final class Security
     
     public static function setParams(array $params = array())
     {
-        self::$_params = array_merge(self::$_params, $params);
+        foreach ($params as $param) {
+            self::setParam($param['tag'], $param['value']);
+        }
     }
     
     public static function getParam($name)
@@ -154,6 +164,11 @@ final class Security
         return self::$_installed;
     }
     
+    public static function isInitialized()
+    {
+        return self::$_initialized;
+    }
+    
     private static function _registerPlugins()
     {
         $front = Zend_Controller_Front::getInstance();
@@ -177,11 +192,11 @@ final class Security
     
     private static function _addRoutes()
     {
-        // @todo fix this hack; make it an option
-		$routesPath = dirname(self::getParam('optionsPath')) . '/routes.xml';
+		$routesPath = self::getParam('dataPath') . DIRECTORY_SEPARATOR . 'routes.xml';
 		
 		if (Zend_Loader::isReadable($routesPath)) {
 		    
+		    $router = Zend_Controller_Front::getInstance()->getRouter();
 		    $routes = new Zend_Config_Xml($routesPath);
 		    $router->addConfig($routes);
 		}

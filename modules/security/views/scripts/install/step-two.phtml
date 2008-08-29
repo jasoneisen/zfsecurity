@@ -1,12 +1,5 @@
 <?php echo $this->partial('heading.phtml', array('heading' => 'Step Two: Database Privileges')); ?>
-<?php if (!empty($this->errors)): ?>
-<p>The following error(s) occured:</p>
-<ul class="error">
-<?php foreach ($this->errors as $error): ?>
-    <li class="error"><?php echo $error; ?></li>
-<?php endforeach; ?>
-</ul>
-<?php endif; ?>
+<?php echo $this->partial('errors.phtml', array('errors' => $this->errors)); ?>
 <p>The installer will now check that it has proper database privileges:<br />
     CREATE, INSERT, UPDATE, DELETE, and ALTER.</p>
 <br />

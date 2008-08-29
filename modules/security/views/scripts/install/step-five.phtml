@@ -1,12 +1,4 @@
 <?php echo $this->partial('heading.phtml', array('heading' => 'Step Five: Execute SQL')); ?>
-<?php if (!empty($this->errors)): ?>
-<p>The following error(s) occured:</p>
-<ul class="error">
-<?php foreach ($this->errors as $error): ?>
-    <li class="error"><?php echo $error; ?></li>
-<?php endforeach; ?>
-</ul>
-<?php endif; ?>
+<?php echo $this->partial('errors.phtml', array('errors' => $this->errors)); ?>
 <p>The installer will now generate and execute the sql from the models it has generated.</p>
-<p>Note: if you chmodded your models folder in the previous step, remember to set it back.</p>
 <?php echo $this->form; ?>

@@ -15,7 +15,7 @@ abstract class Security_Controller_Action_Backend extends Zend_Controller_Action
     
     protected function _secParam($name) {
         
-        return Security_System::getInstance()->getParam($name);
+        return Security::getParam($name);
     }
     
     public function init()

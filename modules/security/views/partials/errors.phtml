@@ -1,0 +1,8 @@
+<?php if (!empty($this->errors)): ?>
+<p>The following error(s) occured:</p>
+<ul class="error">
+<?php foreach ($this->errors as $error): ?>
+    <li><?php echo $error; ?></li>
+<?php endforeach; ?>
+</ul>
+<?php endif; ?>

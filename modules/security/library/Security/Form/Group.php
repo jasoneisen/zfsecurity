@@ -26,7 +26,7 @@ class Security_Form_Group extends Zend_Form
         
         $privilegesForm = new Zend_Form_SubForm(array('legend' => 'Privileges'));
 					
-        if ($acls = Security_Acl::getInstance()->getAcl()) {
+        if ($acls = Security::getAclInstance()->getAclResultObject()) {
             
             foreach ($acls as $acl) {
                 

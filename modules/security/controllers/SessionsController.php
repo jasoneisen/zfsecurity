@@ -12,11 +12,11 @@ class Security_SessionsController extends Security_Controller_Action_Backend
             $actionName = $this->getRequest()->getActionName();
             
             // Enforce this even if ACL does not
-            if (($actionName == 'new' || $actionName == 'create') && null !== Security_System::getActiveAccount()) {
+            if (($actionName == 'new' || $actionName == 'create') && null !== Security::getActiveAccount()) {
                 $this->getHelper('Redirector')->gotoRoute(array(), 'default', true);
             }
             
-            if (($actionName == 'delete' || $actionName == 'destroy') && null !== Security_System::getActiveAccount()) {
+            if (($actionName == 'delete' || $actionName == 'destroy') && null !== Security::getActiveAccount()) {
                 $this->getHelper('Redirector')->gotoRoute(array(), 'new_security_session_path', true);
             }
         }

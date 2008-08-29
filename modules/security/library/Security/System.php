@@ -25,7 +25,7 @@ final class Security_System
         
         if (!$front->hasPlugin('Security_Controller_Plugin_Loader')) {
             
-            $front->registerPlugin(new Security_Controller_Plugin_Loader());
+            //$front->registerPlugin(new Security_Controller_Plugin_Loader());
         }
         
         if (null === $params) {

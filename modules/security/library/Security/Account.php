@@ -4,7 +4,7 @@ class Security_Account
 {
     public static function fromAuth()
     {
-        if (!$tableName = Security_System::getInstance()->getParam('accountTableClass')) {
+        if (!$tableName = Security::getParam('accountTableClass')) {
             throw new Security_Account_Exception("Account table class has not been set");
         }
         

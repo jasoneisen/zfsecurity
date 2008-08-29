@@ -1,15 +1,9 @@
 <?php echo $this->partial('heading.phtml', array('heading' => 'Step Four: Add Relation')); ?>
-<?php if (!empty($this->errors)): ?>
-<p>The following error(s) occured:</p>
-<ul class="error">
-<?php foreach ($this->errors as $error): ?>
-    <li class="error"><?php echo $error; ?></li>
-<?php endforeach; ?>
-</ul>
-<?php endif; ?>
+<?php echo $this->partial('errors.phtml', array('errors' => $this->errors)); ?>
 <p>Please add the following to your Base<?php echo $this->class; ?> class.
     If you plan on regenerating your models at any point, also add the
     relation to your schema file, whichever format it may be in.</p>
+<p>Note: if you chmodded your models folder in the previous step, remember to set it back.</p>
 <br />
 <pre>
 $this->hasMany('SecurityGroup as Groups', array(

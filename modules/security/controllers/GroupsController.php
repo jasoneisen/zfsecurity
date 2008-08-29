@@ -72,7 +72,7 @@ class Security_GroupsController extends Security_Controller_Action_Backend
                 && $group = $this->_getGroup($this->getRequest()->getParam('id'))) {
             
             $form->populate(array('group' => $group->toArray()));
-            $acls = Security_Acl::getInstance()->getAcl();
+            $acls = Security::getAclInstance()->getAclResultObject();
             
             $populate = array();
             
