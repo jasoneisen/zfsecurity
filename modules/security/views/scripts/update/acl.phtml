@@ -3,7 +3,7 @@
 <p><?php echo $this->message; ?></p>
 <?php else: ?>
 <?php if (!empty($this->modules)): ?>
-<p>The following module(s), resource(s), and/or privilege(s) changes have been found in your application:</p>
+<p>The following module, resource, and/or privilege changes have been found in your application:</p>
 <?php foreach($this->modules as $moduleName => $module): ?>
 <ul>
     <li><h3>Module: <?php echo ucfirst($moduleName); ?></h3></li>

@@ -41,9 +41,9 @@ class Security_Form_Settings extends Zend_Form
         $settings = new Zend_Config_Xml($this->_dataPath . DIRECTORY_SEPARATOR . 'settings.xml');
         $settings = $settings->toArray();
         
-        foreach ($settings as $tag => $params) {
+        foreach ($settings as $name => $params) {
             
-            $validators = array(ucfirst($tag));
+            $validators = array(ucfirst($name));
             
             switch ($params['type']) {
                 case 'bool':
@@ -65,28 +65,28 @@ class Security_Form_Settings extends Zend_Form
                 break;
             }
             
-            $this->addElement($type, $tag, array('label' => $params['label'],
+            $this->addElement($type, $name, array('label' => $params['label'],
                                                  'description' => $params['description'],
                                                  'required' => $params['required']));
             
-            $this->getElement($tag)->removeDecorator('Label');
-            $this->getElement($tag)->addDecorator('description', array('placement' => 'PREPEND'));
-            $this->getElement($tag)->addDecorator('Label', array('tag' => 'dt'));
+            $this->getElement($name)->removeDecorator('Label');
+            $this->getElement($name)->addDecorator('description', array('placement' => 'PREPEND'));
+            $this->getElement($name)->addDecorator('Label', array('tag' => 'dt'));
             
             if (!empty($params['validators'])) {
             
-                foreach ($params['validators'] as $name => $validate) {
+                foreach ($params['validators'] as $vName => $validate) {
                     
                     $filter = new Zend_Filter_Word_UnderscoreToSeparator('/');
-                    $file = ucfirst($filter->filter($name)) .'.php';
+                    $file = ucfirst($filter->filter($vName)) .'.php';
             
                     if (Zend_Loader::isReadable('Security/Validate/Setting/'. $file)) {
                         
-                        $class = 'Security_Validate_Setting_'.ucfirst($name);
+                        $class = 'Security_Validate_Setting_'.ucfirst($vName);
                         
                     } elseif (Zend_Loader::isReadable('Zend/Validate/'. $file)) {
                         
-                        $class = 'Zend_Validate_'.ucfirst($name);
+                        $class = 'Zend_Validate_'.ucfirst($vName);
                         
                     } else {
                         continue;
@@ -94,13 +94,13 @@ class Security_Form_Settings extends Zend_Form
                     
                     $options = (!empty($validate['options'])) ? $validate['options'] : null;
                     
-                    $this->getElement($tag)->addValidator(new $class($options));
+                    $this->getElement($name)->addValidator(new $class($options));
                 }
             }
             
-            if (false !== strpos($tag, 'enable') && true === $this->_isInstall) {
+            if (false !== strpos($name, 'enable') && true === $this->_isInstall) {
                 
-                $this->getElement($tag)->setAttrib('disabled', 'disabled');
+                $this->getElement($name)->setAttrib('disabled', 'disabled');
             }
         }
         $this->addElement('submit', 'submit', array('label' => 'Save'));

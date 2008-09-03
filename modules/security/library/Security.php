@@ -28,23 +28,25 @@ final class Security
         if (empty($params) && Zend_Loader::isReadable('SecurityOption.php')) {
             try {
                 $params = Doctrine_Query::create()
-                    ->select('o.tag, o.value')
-                    ->from('SecurityOption o')
+                    ->select('so.name, so.value')
+                    ->from('SecurityOption so')
                     ->execute();
+                
+                foreach ($params as $param) {
+                    self::setParam($param['name'], $param['value']);
+                }
             } catch (Exception $e) {
                 return;
             }
         }
-        if ($params instanceof Doctrine_Null) {
-            return;
-        }
         
-        if ($params instanceof Doctrine_Collection ||
-            $params instanceof Zend_Config) {
-                
+        if ($params instanceof Zend_Config) {
             $params = $params->toArray();
         }
-        self::setParams($params);
+        
+        if (is_array($params)) {
+            self::setParams($params);
+        }
         
         self::_registerPlugins();
         self::_addRoutes();
@@ -94,8 +96,8 @@ final class Security
     
     public static function setParams(array $params = array())
     {
-        foreach ($params as $param) {
-            self::setParam($param['tag'], $param['value']);
+        foreach ($params as $name => $value) {
+            self::setParam($name, $value);
         }
     }
     

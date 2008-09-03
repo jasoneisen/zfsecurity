@@ -1,14 +1,21 @@
 <?php echo $this->partial('heading.phtml', array('heading' => 'Step Four: Add Relation')); ?>
 <?php echo $this->partial('errors.phtml', array('errors' => $this->errors)); ?>
-<p>Please add the following to your Base<?php echo $this->class; ?> class.
-    If you plan on regenerating your models at any point, also add the
-    relation to your schema file, whichever format it may be in.</p>
-<p>Note: if you chmodded your models folder in the previous step, remember to set it back.</p>
-<br />
+<p>Please add the following to your Base<?php echo $this->class; ?> class.</p>
 <pre>
 $this->hasMany('SecurityGroup as Groups', array(
 	'local'		=>	'<?php echo $this->column; ?>',
 	'foreign'	=>	'group_id',
 	'refClass'	=>	'SecurityGroupAccount'));
+</pre>
+<br />
+If you plan on regenerating your models at any point, add the following relation to your schema file:</p>
+<pre>
+relations:
+    SecurityGroup:
+        class: SecurityGroup as Groups
+        local: <?php echo $this->column; ?> 
+        foreign: group_id
+        refClass: SecurityGroupAccount
+        type: many
 </pre>
 <?php echo $this->form; ?>

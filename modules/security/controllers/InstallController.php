@@ -253,6 +253,7 @@ class Security_InstallController extends Zend_Controller_Action
     
     public function stepSixAction()
     {
+        die('woo');
         // Create / save options
         $form = $this->_getForm();
             
@@ -262,11 +263,11 @@ class Security_InstallController extends Zend_Controller_Action
                 
                 $settings = new Zend_Config_Xml($this->_getSession('dataPath') . DIRECTORY_SEPARATOR . 'settings.xml');
 
-                foreach ($form->getValues() as $tag => $value) {
+                foreach ($form->getValues() as $name => $value) {
 
-                    if ($tag != 'submit') {
+                    if ($name != 'submit') {
 
-                        $option = Doctrine::getTable('SecurityOption')->findOneByTag($tag);
+                        $option = Doctrine::getTable('SecurityOption')->findOneByName($name);
 
                         if (!$option || $option instanceof Doctrine_Null) {
 
@@ -274,12 +275,8 @@ class Security_InstallController extends Zend_Controller_Action
 
                         }
 
-                        $option->tag = $tag;
-                        $option->label = $configOptions->$tag->label;
+                        $option->name = $name;
                         $option->value = $value;
-                        $option->type = $configOptions->{$tag}->type;
-                        $option->description = $configOptions->{$tag}->description;
-                        $option->required = $configOptions->{$tag}->required;
                         $option->save();
                     }
                 }
@@ -302,6 +299,7 @@ class Security_InstallController extends Zend_Controller_Action
     
     protected function _getForm($dataPath = null)
     {
+        
         if (!Zend_Registry::isRegistered($this->_formNamespace)) {
             
             if (null === $dataPath && !$dataPath = $this->_getSession('dataPath')) {

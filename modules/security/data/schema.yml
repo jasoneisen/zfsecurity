@@ -168,15 +168,9 @@ SecurityGroupAcl:
 SecurityOption: 
   tableName: security_option
   columns: 
-    tag: 
+    name: 
       fixed: false
       primary: true
-      notnull: true
-      autoincrement: false
-      type: string(64)
-    label: 
-      fixed: false
-      primary: false
       notnull: true
       autoincrement: false
       type: string(64)
@@ -186,19 +180,6 @@ SecurityOption:
       notnull: true
       autoincrement: false
       type: string(255)
-    type:
-        primary: false
-        notnull: true
-        autoincrement: false
-        type: enum
-        values: [bool, number, string, text, date]
-    description: 
-      fixed: false
-      primary: false
-      notnull: false
-      autoincrement: false
-      type: string(255)
-    required: boolean
 SecurityGroupAccount:
   tableName: security_group_account
   columns:

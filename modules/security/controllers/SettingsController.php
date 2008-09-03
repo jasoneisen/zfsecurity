@@ -48,27 +48,27 @@ class Security_SettingsController extends Security_Controller_Action_Backend
 	protected function _saveOptions($post)
 	{
 		$options = Doctrine_Query::create()
-		    ->select('so.tag, so.value')
-		    ->from('SecurityOption so INDEXBY so.tag')
+		    ->select('so.name, so.value')
+		    ->from('SecurityOption so INDEXBY so.name')
 		    ->execute();
 
 		try {
 			
 			Doctrine_Manager::connection()->beginTransaction();
 
-			foreach ($post as $key => $value) {
+			foreach ($post as $name => $value) {
 			    
-			    if ($key == 'submit') {
+			    if ($name == 'submit') {
 			        continue;
 		        }
 			    
-			    if (!isset($options[$key])) {
+			    if (!isset($options[$name])) {
 			        
 			        $option = new SecurityOption();
-			        $option->tag = $key;
+			        $option->name = $name;
 			        
 			    } else {
-			        $option = $options[$key];
+			        $option = $options[$name];
 			    }
 			    
 				$option->value = $value;
