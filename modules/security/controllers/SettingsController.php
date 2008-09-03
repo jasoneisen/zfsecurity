@@ -31,6 +31,12 @@ class Security_SettingsController extends Security_Controller_Action_Backend
                 $element->setValue($value);
             }
         }
+        
+        if (!Zend_Loader::isReadable($params['dataPath'])) {
+            
+            $dataPath = dirname(dirname(realpath(__FILE__))) . DIRECTORY_SEPARATOR . 'data';
+            $form->getElement('dataPath')->setValue($dataPath);
+        }
 	    
 	    return $form;
 	}
