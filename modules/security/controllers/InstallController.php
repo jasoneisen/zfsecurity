@@ -499,7 +499,7 @@ class Security_InstallController extends Zend_Controller_Action
                 'class' => $accountTable,
                 'local' => 'group_id',
                 'foreign' => $localColumn,
-                'type' => Doctrine_Relation::MANY_COMPOSITE,
+                'type' => Doctrine_Relation::MANY,
                 'alias' => $alias,
                 'refClass' => 'SecurityGroupAccount',
                 'key' => md5('id'.$localColumn.$accountTable.'SecurityGroupAccount'));

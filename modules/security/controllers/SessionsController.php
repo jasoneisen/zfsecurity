@@ -53,7 +53,7 @@ class Security_SessionsController extends Security_Controller_Action_Backend
         
         if ($form->isValid($this->getRequest()->getPost())) {
             
-            $options = Security_System::getInstance()->getParams();
+            $options = Security::getParams();
             
             $authAdapter = new Security_Auth_Adapter_Doctrine_Record(
 			                        Doctrine::getConnectionByTableName($options['accountTableClass']));
