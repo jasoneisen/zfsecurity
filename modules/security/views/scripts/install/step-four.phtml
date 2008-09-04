@@ -6,6 +6,10 @@ $this->hasMany('SecurityGroup as Groups', array(
 	'local'		=>	'<?php echo $this->columnF; ?>',
 	'foreign'	=>	'group_id',
 	'refClass'	=>	'SecurityGroupAccount'));
+
+$this->hasMany('SecurityGroupAccount', array(
+    'local'     =>  '<?php echo $this->columnL; ?>',
+    'foreign'   =>  '<?php echo $this->columnF; ?>'));
 </pre>
 <br />
 If you plan on regenerating your models at any point, add the following relation to your schema file:</p>
@@ -19,7 +23,7 @@ relations:
     type: many
   SecurityGroupAccount:
     local: <?php echo $this->columnL; ?> 
-    foreign: user_id
+    foreign: <?php echo $this->columnF; ?> 
     type: many
 </pre>
 <?php echo $this->form; ?>
