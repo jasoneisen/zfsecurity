@@ -12,7 +12,7 @@ class Security_SessionsController extends Security_Controller_Action_Backend
             $actionName = $this->getRequest()->getActionName();
             
             // Enforce this even if ACL does not
-            if (($actionName == 'new' || $actionName == 'create') && !Security::getActiveAccount()) {
+            if (($actionName == 'new' || $actionName == 'create') && Security::getActiveAccount()) {
                 $this->getHelper('Redirector')->gotoRoute(array(), 'default', true);
             }
             

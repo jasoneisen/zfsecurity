@@ -6,6 +6,8 @@ final class Security
     
     private static $_activeAccount = null;
     
+    private static $_activeAccountLoaded = false;
+    
     private static $_accountQuery = null;
     
     private static $_installed = null;
@@ -65,9 +67,9 @@ final class Security
     public static function getActiveAccount($force = false)
     {
         if (null === self::$_activeAccount ||
-            true === $force) {
+            (false === self::$_activeAccountLoaded || true === $force)) {
             
-            self::$_activeAccount = new Doctrine_Null();
+            self::$_activeAccountLoaded = true;
             
             if (self::isInstalled() &&
                 $identity = Zend_Auth::getInstance()->getIdentity()) {
@@ -81,7 +83,9 @@ final class Security
                         ->addWhere('a.'. $column .' = ?')
                         ->fetchOne(array($identity->$column));
                     
-                    self::$_activeAccount = $record;
+                    if (!($record instanceof Doctrine_Null)) {
+                        self::$_activeAccount = $record;
+                    }
                 }
             }
         }
@@ -121,7 +125,7 @@ final class Security
             $class = self::getParam('accountTableClass');
             self::$_accountQuery = Doctrine_Query::create()
                 ->from($class .' a')
-                ->leftJoin('a.Groups g');
+                ->leftJoin('a.Groups g INDEXBY g.name');
         }
         
         return self::$_accountQuery;
