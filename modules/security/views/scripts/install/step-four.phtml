@@ -3,7 +3,7 @@
 <p>Please add the following to your Base<?php echo $this->class; ?> class.</p>
 <pre>
 $this->hasMany('SecurityGroup as Groups', array(
-	'local'		=>	'<?php echo $this->column; ?>',
+	'local'		=>	'<?php echo $this->columnF; ?>',
 	'foreign'	=>	'group_id',
 	'refClass'	=>	'SecurityGroupAccount'));
 </pre>
@@ -11,11 +11,15 @@ $this->hasMany('SecurityGroup as Groups', array(
 If you plan on regenerating your models at any point, add the following relation to your schema file:</p>
 <pre>
 relations:
-    SecurityGroup:
-        class: SecurityGroup as Groups
-        local: <?php echo $this->column; ?> 
-        foreign: group_id
-        refClass: SecurityGroupAccount
-        type: many
+  Groups:
+    refClass: SecurityGroupAccount
+    class: SecurityGroup
+    local: <?php echo $this->columnF; ?> 
+    foreign: group_id
+    type: many
+  SecurityGroupAccount:
+    local: <?php echo $this->columnL; ?> 
+    foreign: user_id
+    type: many
 </pre>
 <?php echo $this->form; ?>

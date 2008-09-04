@@ -211,7 +211,8 @@ class Security_InstallController extends Zend_Controller_Action
         $identifier = Doctrine::getTable($class)->getIdentifier();
         
         $this->view->class = $class;
-        $this->view->column = ($identifier == 'id') ? strtolower($class) . '_id' : $identifier;
+        $this->view->columnF = ($identifier == 'id') ? strtolower($class) . '_id' : $identifier;
+        $this->view->columnL = $identifier;
         $this->view->form = $form;
     }
     
