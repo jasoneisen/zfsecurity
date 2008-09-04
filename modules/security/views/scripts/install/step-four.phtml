@@ -1,6 +1,6 @@
 <?php echo $this->partial('heading.phtml', array('heading' => 'Step Four: Add Relation')); ?>
 <?php echo $this->partial('errors.phtml', array('errors' => $this->errors)); ?>
-<p>Please add the following to your Base<?php echo $this->class; ?> class.</p>
+<p>Please add the following to setUp() your Base<?php echo $this->class; ?> class.</p>
 <pre>
 $this->hasMany('SecurityGroup as Groups', array(
     'local'     =>  '<?php echo $this->columnF; ?>',
