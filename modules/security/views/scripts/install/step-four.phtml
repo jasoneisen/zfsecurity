@@ -3,9 +3,9 @@
 <p>Please add the following to your Base<?php echo $this->class; ?> class.</p>
 <pre>
 $this->hasMany('SecurityGroup as Groups', array(
-	'local'		=>	'<?php echo $this->columnF; ?>',
-	'foreign'	=>	'group_id',
-	'refClass'	=>	'SecurityGroupAccount'));
+    'local'     =>  '<?php echo $this->columnF; ?>',
+    'foreign'   =>  'group_id',
+    'refClass'  =>  'SecurityGroupAccount'));
 
 $this->hasMany('SecurityGroupAccount', array(
     'local'     =>  '<?php echo $this->columnL; ?>',
