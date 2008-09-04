@@ -254,7 +254,6 @@ class Security_InstallController extends Zend_Controller_Action
     
     public function stepSixAction()
     {
-        die('woo');
         // Create / save options
         $form = $this->_getForm();
             
