@@ -80,7 +80,7 @@ class Security_SettingsController extends Security_Controller_Action_Backend
 			return true;
 		
 		} catch (Exception $e) {
-		    //die($e);
+		    Doctrine_Manager::connection()->rollback();
 			return false;
 		}
 	}
