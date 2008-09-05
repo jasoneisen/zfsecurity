@@ -10,7 +10,7 @@ set_include_path(
     $basePath.'application'.$ds.'library'.$ps.
     $basePath.'application'.$ds.'models'.$ps.
     $basePath.'application'.$ds.'models'.$ds.'generated'.$ps.
-//  $basePath.'application'.$ds.'modules'.$ds.'security'.$ds.'library'.$ps
+//  $basePath.'application'.$ds.'modules'.$ds.'security'.$ds.'library'.$ps.
     get_include_path());
 
 require_once 'Zend/Loader.php';
