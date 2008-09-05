@@ -40,21 +40,27 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		    
 		    if (!$account instanceof Doctrine_Record) {
 		        
+		        $uri = str_replace($request->getBaseUrl(), '', $request->getRequestUri());
+		        
+		        $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger');
+		        $flashMessenger->setNameSpace('Security_Return_Url');
+		        $flashMessenger->addMessage($uri);
+		        
 		        $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector');
 		        $redirector->gotoRouteAndExit(array(), 'new_security_session_path', true);
 
 		    } else {
 		    
-		        if (!$secSys->getParam('useSecurityErrorController')) {
+		        //if (!$secSys->getParam('useSecurityErrorController')) {
 		            
 		            throw new Security_Exception($error);
-	            }
+	            //}
 		            
-			    $request->setModuleName('security');
-			    $request->setControllerName('error');
-			    $request->setActionName('error');
-			    $request->setParam('error', $error);
-			    $request->setDispatched(false);
+			    //$request->setModuleName('security');
+			    //$request->setControllerName('error');
+			    //$request->setActionName('error');
+			    //$request->setParam('error', $error);
+			    //$request->setDispatched(false);
 		    }
 		}
     }

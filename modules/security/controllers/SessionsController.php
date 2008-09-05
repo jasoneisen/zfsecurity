@@ -34,14 +34,14 @@ class Security_SessionsController extends Security_Controller_Action_Backend
         
         $form = $this->_getForm('post');
         
-        if (($returnUrl = $this->_getParam('returnUrl'))
-            || $returnUrl = str_replace($this->getRequest()->getBaseUrl(), "", $this->getRequest()->getRequestUri())) {
+        $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger');
+        $flashMessenger->setNameSpace('Security_Return_Url');
+        
+        if ($flashMessenger->hasMessages()) {
             
-            // Check if the return url is pointing to this site
-            //if (0 === strstr($returnUrl, $this->view->BaseUrl())) {
-                
-                $form->getElement('return_url')->setValue($returnUrl);
-            //}
+            list($returnUrl) = $flashMessenger->getMessages();
+            $flashMessenger->clearMessages();
+            $flashMessenger->addMessage($returnUrl);
         }
         
         $this->view->loginForm = $this->_getForm('post');
@@ -79,10 +79,15 @@ class Security_SessionsController extends Security_Controller_Action_Backend
                         $authAdapter->getResultRowObject(
                             Doctrine::getTable($options['accountTableClass'])->getIdentifier(), $options['loginCredentialColumn']));
                     
-                    if ($form->getValue('return_url')) {
-                        
-                        $this->_redirect($form->getValue('return_url'));
+                    $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger');
+                    $flashMessenger->setNameSpace('Security_Return_Url');
+                    
+                    if ($flashMessenger->hasMessages()) {
+                    
+                        list($returnUrl) = $flashMessenger->getMessages();
+                        $this->_redirect($returnUrl);
                     }
+                    
                     $this->getHelper('Redirector')->gotoRoute(array(), 'default', true);
                     break;
                 
