@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <layout>
+        <title>Demo Blog</title>
+        <branding>Demo Blog</branding>
+    </layout>
+    <database>
+        <string>mysql://user:password@localhost/test</string>
+    </database>
+</config>
