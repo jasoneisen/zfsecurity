@@ -48,6 +48,7 @@ $layout->setLayout('default');
 
 $view = $layout->getView();
 $view->addScriptPath($basePath.'application'.$ds.'layouts'.$ds.'default');
+$view->addHelperPath($basePath.'application'.$ds.'library'.$ds.'App'.$ds.'View'.$ds.'Helper', 'App_View_Helper');
 $view->headTitle($config->layout->title)->setSeparator(' / ');
 $view->placeholder('branding')->set($config->layout->branding);
 
