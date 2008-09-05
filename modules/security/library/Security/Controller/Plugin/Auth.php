@@ -32,7 +32,6 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		    	return;
 		    	
 		    } catch (Exception $e) {
-		    	die($e);
 		    	$error = $e->getMessage();
 		    }
 	    }
