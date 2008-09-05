@@ -19,4 +19,9 @@ class IndexController extends Zend_Controller_Action
             // Shoot off contact email
         }
     }
+    
+    public function mollioAction()
+    {
+        
+    }
 }
