@@ -153,14 +153,20 @@ final class Security
             if ($class = self::getParam('accountTableClass')) {
         
                 try {
-                    $identifier = Doctrine::getTable($class)->getIdentifier();
+                    $table = Doctrine::getTable($class);
+                    
+                    if (!$table->hasRelation('Groups')) {
+                        throw new Exception();
+                    }
         
-                    $query = Doctrine_Query::create()
-                        ->select('a.'.$identifier)
-                        ->from($class.' a')
-                        ->leftJoin('a.Groups g')
-                        ->limit(1)
-                        ->execute();
+                    if (!$path = self::getParam('dataPath')) {
+                        throw new Exception();
+                    }
+                    
+                    $migration = new Security_Migration();
+                    if ($migration->getCurrentVersion() < 3) {
+                        throw new Exception();
+                    }
         
                     self::$_installed = true;
                     

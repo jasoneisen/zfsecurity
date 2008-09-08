@@ -40,12 +40,22 @@ abstract class Security_Controller_Action_Backend extends Zend_Controller_Action
             $view->addScriptPath($addPath);
         }
         
+        if (!Security::isInstalled()) {
+            $this->_forward('not-installed');
+            return;
+        }
+        
         $front = Zend_Controller_Front::getInstance();
         $request = $this->getRequest();
         
         if ($request->getActionName() == $front->getDefaultAction() && $request->getActionName() != 'index') {
             $this->_forward('index');
         }
+    }
+    
+    public function notInstalledAction()
+    {
+        $this->renderScript('partials/not-installed.phtml');
     }
     
     /**

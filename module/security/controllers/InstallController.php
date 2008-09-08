@@ -3,7 +3,7 @@
 /*
  * This class has copied into it everything in Security_Controller_Action_Backend
  * (which every other controller extends) because on index and step-one the include
- * path may have not been added yet, thus creating a dependency which breaks
+ * path may have not been added yet, creating a dependency which breaks
  * the installer.
  */
 class Security_InstallController extends Zend_Controller_Action
