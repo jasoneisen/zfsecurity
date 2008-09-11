@@ -20,7 +20,7 @@ class IndexController extends Zend_Controller_Action
         }
     }
     
-    public function mollioAction()
+    public function styleguideAction()
     {
         
     }

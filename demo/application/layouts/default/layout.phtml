@@ -7,31 +7,42 @@
 <?php echo $this->headStyle() . "\n"; ?>
 <?php echo $this->headScript() . "\n"; ?>
 <?php echo $this->dojo() . "\n"; ?>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->LayoutUrl('main.css'); ?>" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->LayoutUrl('print.css'); ?>" media="print" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->LayoutUrl('ie6_or_less.css'); ?>" />
+<![endif]-->
 </head>
 <body>
 <?php echo $this->inlineScript() . "\n"; ?>
-    <div id="wrapper">
+    <div id="wrap">
         <div id="header">
-            <h1><a href="<?php echo $this->Url(array(), 'default', true); ?>"><?php echo $this->placeholder('branding'); ?></a></h1>
-        </div>
-        <div id="navigation">
-            <ul>
+            <div id="site-name"><?php echo $this->placeholder('branding'); ?></div>
+            <div id="search">
+                <form action="">
+                <label for="searchsite">Site Search:</label>
+                <input id="searchsite" name="searchsite" type="text" />
+                <input type="submit" value="Go" class="f-submit" />
+                </form>
+            </div>
+            <ul id="nav">
                 <li class="first"><a href="<?php echo $this->Url(array(), 'default', true); ?>">Home</a></li>
-                <li><a href="<?php echo $this->Url(array('module'=>'blog'), 'default', true); ?>">Blog</a></li>
+                <li class="active"><a href="<?php echo $this->Url(array('module'=>'blog'), 'default', true); ?>">Blog</a></li>
                 <li><a href="<?php echo $this->Url(array('action'=>'about'), 'default', true); ?>">About</a></li>
                 <li class="last"><a href="<?php echo $this->Url(array('action'=>'contact'), 'default', true); ?>">Contact</a></li>
             </ul>
-        </div>          
-        <div id="content">
+        </div>        
+        <div id="content-wrap">
+            <div id="content">
+                <?php echo $this->layout()->content . "\n"; ?>
+                <div id="footer">       
+                    <p>&copy; <?php echo date('Y'); ?> <strong><?php echo $this->placeholder('branding'); ?></strong></p>
+                </div>
+            </div>
             <div id="sidebar">
                 <?php echo $this->action('index', 'sidebar', 'default') . "\n"; ?>
             </div>
-            <div id="content-main">
-                <?php echo $this->layout()->content . "\n"; ?>
-            </div>
-        </div>
-        <div id="footer">       
-            <p>&copy; <?php echo date('Y'); ?> <strong><?php echo $this->placeholder('branding'); ?></strong></p>      
+            <div id="poweredby">Test</div>
         </div>
     </div>
 </body>
