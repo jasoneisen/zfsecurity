@@ -1,0 +1,11 @@
+<h2>Setup</h2>
+<p>You need to set up your blog!</p>
+<?php if (isset($this->error)): ?>
+<p style="color:red"><?php echo $this->error; ?></p>
+<?php endif; ?>
+<?php if (isset($this->message)): ?>
+<p style="color:green"><?php echo $this->message; ?></p>
+<?php endif; ?>
+<p>1) <a href="<?php echo $this->Url(array('do' => 'models')) ?>">Generate models</a></p>
+<p>2) <a href="<?php echo $this->Url(array('do' => 'sql')) ?>">Run SQL from models</a></p>
+<p>3) <a href="<?php echo $this->Url(array('do' => 'populate')) ?>">Import dummy data</a></p>

@@ -1,0 +1,26 @@
+<h1>Blog</h1>
+<p><a href="<?php echo $this->Url(array(), 'new_blog_post_path'); ?>">New Post</a></p>
+<?php if (!empty($this->posts)): ?>
+<?php foreach ($this->posts as $post): ?>
+<h4>
+    <a href="<?php echo $this->Url(array('id'=>$post->id), 'blog_post_path', true); ?>">
+        <?php echo $this->escape($post->title); ?>
+    </a>
+    <span class="author">
+        By: 
+            <?php echo $this->escape($post->Author->firstname); ?>
+            <?php echo $this->escape($post->Author->lastname); ?>
+    </span>
+    <span class="date">Posted on: <?php echo $this->escape($post->created_at); ?></span>
+</h4>
+<p><?php echo $this->escape(reset(explode("\n", $post->body))); ?></p>
+<p>
+    <a class="morelink" href="<?php echo $this->Url(array('id'=>$post->id), 'blog_post_path', true); ?>">
+        Read more...
+    </a>
+</p>
+<div class="clear">&nbsp;</div>
+<?php endforeach; ?>
+<?php else: ?>
+<p>No blog posts could be found</p>
+<?php endif; ?>

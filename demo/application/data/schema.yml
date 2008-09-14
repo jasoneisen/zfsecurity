@@ -1,0 +1,41 @@
+---
+User:
+    columns:
+        username: 
+            type: string(16)
+            unique: true
+        password: string(32)
+        firstname: string(255)
+        lastname: string(255)
+Post:
+    columns:
+        user_id: integer
+        title: string(255)
+        body: string
+    actAs:
+        Timestampable:
+        Sluggable:
+            fields: [title]
+    relations:
+        User:
+            alias: Author
+            foreignAlias: Posts
+            onUpdate: CASCADE
+            onDelete: CASCADE
+Comment:
+    columns:
+        post_id: integer
+        user_id: integer
+        title: string(255)
+        body: string
+    actAs: [Timestampable]
+    relations:
+        Post:
+            foreignAlias: Comments
+            onUpdate: CASCADE
+            onDelete: CASCADE
+        User:
+            alias: Author
+            foreignAlias: Comments
+            onUpdate: CASCADE
+            onDelete: CASCADE

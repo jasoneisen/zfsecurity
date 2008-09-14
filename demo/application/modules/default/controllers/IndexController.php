@@ -20,6 +20,11 @@ class IndexController extends Zend_Controller_Action
         }
     }
     
+    public function helpAction()
+    {
+        
+    }
+    
     public function styleguideAction()
     {
         

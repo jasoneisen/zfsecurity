@@ -75,6 +75,7 @@ h6 {font-size: 96%}
 .success {color:#390;font-weight:bold}
 .caption {color:#999;font-size:11px}
 .date {font: bold 82% arial;color:#bbb;display:block;letter-spacing: 1px}
+.author {font: bold 82% arial;color:#666;display:block;letter-spacing: 1px}
 small {font-size:11px}
 
 /* LISTS */

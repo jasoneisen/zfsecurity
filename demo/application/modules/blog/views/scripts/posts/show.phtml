@@ -1,0 +1,32 @@
+<?php if (isset($this->post)): ?>
+<h2><?php echo $this->escape($this->post->title); ?></h2>
+<p>
+    <a href="<?php echo $this->Url(array('id' => $this->post->id), 'edit_blog_post_path'); ?>">
+        Edit</a>
+    |
+    <a href="<?php echo $this->Url(array('id' => $this->post->id), 'delete_blog_post_path'); ?>">
+        Delete</a>
+</p>
+<p><?php echo nl2br($this->escape($this->post->body)); ?></p>
+<h3>Comments:</h3>
+<?php if ($this->post->Comments->count()): ?>
+<?php foreach ($this->post->Comments as $comment): ?>
+<h4><?php echo $this->escape($comment->title); ?></h4>
+<p>By: <?php echo $this->escape($comment->Author->username); ?> 
+    on <?php echo $this->escape($comment->created_at); ?>
+    <a href="<?php echo $this->Url(array('id'=>$comment->id,'post_id' => $this->post->id), 'edit_blog_post_comment_path'); ?>">
+        Edit</a>
+    |
+    <a href="<?php echo $this->Url(array('id'=>$comment->id,'post_id' => $this->post->id), 'delete_blog_post_comment_path'); ?>">
+        Delete</a>
+</p>
+<p><?php echo $this->escape($comment->body); ?></p>
+<?php endforeach; ?>
+<?php else: ?>
+<p>No comments yet</p>
+<?php endif; ?>
+<?php echo $this->action('new', 'comments', 'blog', array('post_id'=>$this->post->id)); ?>
+<?php else: ?>
+<p>Sorry, the blog post you are looking for could not be found</p>
+<?php endif; ?>
+<p><a href="<?php echo $this->Url(array(), 'blog_posts_path'); ?>">&lt;&lt; Back to list</a></p>

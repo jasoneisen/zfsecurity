@@ -26,10 +26,11 @@
                 </form>
             </div>
             <ul id="nav">
-                <li class="first"><a href="<?php echo $this->Url(array(), 'default', true); ?>">Home</a></li>
-                <li class="active"><a href="<?php echo $this->Url(array('module'=>'blog'), 'default', true); ?>">Blog</a></li>
-                <li><a href="<?php echo $this->Url(array('action'=>'about'), 'default', true); ?>">About</a></li>
-                <li class="last"><a href="<?php echo $this->Url(array('action'=>'contact'), 'default', true); ?>">Contact</a></li>
+                <li class="first"><a href="<?php echo $this->Url(array(), 'root_path', true); ?>">Home</a></li>
+                <li><a href="<?php echo $this->Url(array(), 'blog_path', true); ?>">Blog</a></li>
+                <li><a href="<?php echo $this->Url(array(), 'about_path', true); ?>">About</a></li>
+                <li><a href="<?php echo $this->Url(array(), 'contact_path', true); ?>">Contact</a></li>
+                <li class="last"><a href="<?php echo $this->Url(array(), 'help_path', true); ?>">Help</a></li>
             </ul>
         </div>        
         <div id="content-wrap">

@@ -1,0 +1,7 @@
+<h2>Delete Comment</h2>
+<p>Are you sure you want to delete: <b><?php echo $this->escape($this->comment->title); ?></b>?</p>
+<p><a href="<?php echo $this->Url(array('id'=>$this->comment->post_id), 'blog_post_path'); ?>">Cancel</a></p>
+<form action="" method="post">
+<input type="hidden" name="_method" value="delete">
+<input type="submit" name="submit" value="Delete">
+</form>
