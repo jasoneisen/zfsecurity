@@ -11,7 +11,7 @@ set_include_path(
     $basePath.'application'.$ds.'library'.$ps.
     $basePath.'application'.$ds.'models'.$ps.
     $basePath.'application'.$ds.'models'.$ds.'generated'.$ps.
-    $basePath.'application'.$ds.'modules'.$ds.'security'.$ds.'library'.$ps.
+//    $basePath.'application'.$ds.'modules'.$ds.'security'.$ds.'library'.$ps.
     get_include_path());
 
 // Get autoloading going
@@ -62,6 +62,6 @@ $view->placeholder('branding')->set($config->layout->branding);
 
 Zend_Dojo::enableView($view);
 
-Security::init();
+//Security::init();
 
 // We then return back to inxex.php
