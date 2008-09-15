@@ -31,12 +31,10 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		    	
 		    	return;
 		    	
-		    } catch (Exception $e) {
-		    	$error = $e->getMessage();
-		    }
+		    } catch (Exception $e) {}
 	    }
         
-		if (isset($error)) {
+		if (isset($e)) {
 		    
 		    if (!$account instanceof Doctrine_Record) {
 		        
@@ -50,17 +48,13 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		        $redirector->gotoRouteAndExit(array(), 'new_security_session_path', true);
 
 		    } else {
-		    
-		        //if (!$secSys->getParam('useSecurityErrorController')) {
+		        
+		        $this->getResponse()->setException($e);
+		        
+		        $errorHandler = Zend_Controller_Front::getInstance()
+		            ->getPlugin('Zend_Controller_Plugin_ErrorHandler');
 		            
-		            throw new Security_Exception($error);
-	            //}
-		            
-			    //$request->setModuleName('security');
-			    //$request->setControllerName('error');
-			    //$request->setActionName('error');
-			    //$request->setParam('error', $error);
-			    //$request->setDispatched(false);
+                $errorHandler->postDispatch($request);
 		    }
 		}
     }
