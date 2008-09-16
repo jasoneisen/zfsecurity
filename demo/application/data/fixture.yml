@@ -7,9 +7,9 @@ User:
         lastname: Doe
     two:
         id: 1235
-        username: jwhare
-        firstname: Jonathan
-        lastname: Whare
+        username: bobd
+        firstname: Bob
+        lastname: Dill
     three:
         id: 1236
         username: marym
@@ -19,7 +19,7 @@ Post:
     one:
         id: 4321
         user_id: 1234
-        title: I Have More Lawsuits Than Anyone
+        title: Don't worry, be happy
         body: |
             Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Vestibulum ligula libero, iaculis a, porta sed, ornare nec, pede. Morbi porttitor, ante sagittis tristique pellentesque, tellus massa porttitor felis, eu vulputate ligula lacus at felis. Pellentesque pulvinar, metus non dictum facilisis, lectus velit dictum sapien, in consequat risus leo eu pede.
             
@@ -29,7 +29,7 @@ Post:
     two:
         id: 5321
         user_id: 1235
-        title: I Like Turtles
+        title: I'm ok, you're ok
         body: |
             Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Vestibulum ligula libero, iaculis a, porta sed, ornare nec, pede. Morbi porttitor, ante sagittis tristique pellentesque, tellus massa porttitor felis, eu vulputate ligula lacus at felis. Pellentesque pulvinar, metus non dictum facilisis, lectus velit dictum sapien, in consequat risus leo eu pede.
             
@@ -39,7 +39,7 @@ Post:
     three:
         id: 6321
         user_id: 1236
-        title: Top 10 Reasons I Like Top 10's
+        title: I believe I can fly
         body: |
             Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Vestibulum ligula libero, iaculis a, porta sed, ornare nec, pede. Morbi porttitor, ante sagittis tristique pellentesque, tellus massa porttitor felis, eu vulputate ligula lacus at felis. Pellentesque pulvinar, metus non dictum facilisis, lectus velit dictum sapien, in consequat risus leo eu pede.
             
@@ -60,5 +60,5 @@ Comment:
     three:
         user_id: 1235
         post_id: 6321
-        title: turtles
-        body: turtles turtles turtles turtles turtles turtles turtles turtles turtles
+        title: You should...
+        body: try flying and put it on youtube
