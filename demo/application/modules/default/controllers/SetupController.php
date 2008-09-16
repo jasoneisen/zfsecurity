@@ -45,7 +45,7 @@ class SetupController extends Zend_Controller_Action
                         break;
                     }
                     
-                    $this->view->message = "Models successfully generated";
+                    $this->view->message = "SQL successfully executed";
                     break;
                 
                 case 'populate':
