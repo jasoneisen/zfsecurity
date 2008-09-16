@@ -30,52 +30,37 @@ class Security_Acl_Generator
     }
     
     public function getActions($resource) {
-        $controllerClass = "";
         
-        // Create the class name
         if (strstr($resource, '_')) {
-            $pieces = explode('_', $resource);
-            foreach ($pieces as $piece) {
-                if (strtolower($piece) != 'controller') {
-                    $controllerClass .= ucfirst(strtolower($piece)) .'_';
-                }
-            }
-            $controllerClass = substr($controllerClass, 0, strlen($controllerClass)-1) . 'Controller';
+            
+            list($moduleName, $controllerName) = explode('_', $resource);
+            $controllerName = ucfirst($controllerName) . 'Controller';
+            $controllerClass = ucfirst($moduleName) .'_'. $controllerName;
+            
         } else {
-            $controllerClass = ucwords(strtolower($resource)) . 'Controller';
+            
+            $controllerName = ucfirst($resource . 'Controller');
+            $controllerClass = $controllerName;
         }
         
-        $controllerFile = null;
-        
-        //Find the controller file
         $fc = Zend_Controller_Front::getInstance();
-        foreach ($fc->getControllerDirectory() as $dir_path)
-        {
-            $test_file = $dir_path . '/' . $controllerClass . '.php';
-            if (file_exists($test_file))
-            {
-                $module = basename(dirname($dir_path));
-                $controllerFile = $test_file;
-                break;
-            }
-        }
+        $dirs = $fc->getControllerDirectory();
         
-        if (empty($controllerFile))
-            return false;
+        $dir = isset($moduleName) ? $dirs[$moduleName] : $dirs[$fc->getDefaultModule()];
+        $controllerFile =  $dir .'/'. $controllerName . '.php';
         
-        //echo "<u>".ucfirst($module).$controllerClass."</u><br>";
-        // Inspect the controller class for methods
-        require_once($controllerFile);
+        require_once $controllerFile;
         
-        if ($module == $fc->getDefaultModule() || $module == 'application') {
-            if ($fc->getParam('prefixDefaultModule')) {
-                $className = ucfirst($fc->getDefaultModule()).'_'.$controllerClass;
-            } else {
-                $className = $controllerClass;
-            }
-        } else {
-            $className = ucfirst($module).'_'.$controllerClass;
-        }
+        //if ($module == $fc->getDefaultModule() || $module == 'application') {
+        //    if ($fc->getParam('prefixDefaultModule')) {
+        //        $className = ucfirst($fc->getDefaultModule()).'_'.$controllerClass;
+        //    } else {
+        //        $className = $controllerClass;
+        //    }
+        //} else {
+        //    $className = ucfirst($module).'_'.$controllerClass;
+        //}
+        $className = $controllerClass;
         
         $reflect = new ReflectionClass($className);
         $actions = array();

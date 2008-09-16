@@ -102,11 +102,16 @@ class Security_UpdateController extends Security_Controller_Action_Backend
             $this->_addPart($acl->Privilege);
         }
         
+        $defaultModule = Zend_Controller_Front::getInstance()->getDefaultModule();
+        
         foreach ($gen->getResources() as $genModule => $genResources) {
             
             foreach ($genResources as $genResource) {
                 
-                foreach ($gen->getActions($genResource) as $genAction) {
+                $genResourceName = ($genModule != $defaultModule) ? 
+                    $genModule .'_'. $genResource : $genResource;
+                
+                foreach ($gen->getActions($genResourceName) as $genAction) {
                     
                     if (!isset($modules[$genModule]['resources'][$genResource]['privileges'][$genAction])) {
 
@@ -129,6 +134,7 @@ class Security_UpdateController extends Security_Controller_Action_Backend
                 unset($modules[$genModule]);
             }
         }
+        
         return $modules;
     }
     
