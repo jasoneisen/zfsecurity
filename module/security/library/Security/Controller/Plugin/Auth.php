@@ -15,6 +15,9 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		    $groups = $account->Groups;
 		}
 		
+		$defaultModule = Zend_Controller_Front::getInstance()->getDefaultModule();
+		$moduleName = ($request->getModuleName()) ? $request->getModuleName() : $defaultModule;
+		
 		foreach ($groups as $group) {
         
 		    try {
@@ -22,10 +25,10 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		    	if (!$acl->hasRole($group->name)) {
        	    	    throw new Exception("The requested user role '".$group->name."' does not exist");									
        	    	}
-       	    	if (!$acl->has($request->getModuleName().'_'.$request->getControllerName())) {
+       	    	if (!$acl->has($moduleName.'_'.$request->getControllerName())) {
 		    		throw new Exception("The requested controller '".$request->getControllerName()."' does not exist as an ACL resource");
  		    	}
-		    	if (!$acl->isAllowed($group->name, $request->getModuleName().'_'.$request->getControllerName(), $request->getActionName())) {
+		    	if (!$acl->isAllowed($group->name, $moduleName.'_'.$request->getControllerName(), $request->getActionName())) {
 		    		throw new Exception("The page you requested does not exist or you do not have access");
 		    	}
 		    	
