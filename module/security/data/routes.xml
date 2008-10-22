@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <routes>
+    <security_root_path>
+        <route>security/*</route>
+        <defaults>
+            <module>security</module>
+            <controller>index</controller>
+            <action>index</action>
+        </defaults>
+    </security_root_path>
+    <security_update_path>
+        <route>security/update/*</route>
+        <defaults>
+            <module>security</module>
+            <controller>update</controller>
+            <action>index</action>
+        </defaults>
+    </security_update_path>
+    <security_update_acl_path>
+        <route>security/update/acl/*</route>
+        <defaults>
+            <module>security</module>
+            <controller>update</controller>
+            <action>acl</action>
+        </defaults>
+    </security_update_acl_path>
     <security_settings_path>
         <route>security/settings/*</route>
         <defaults>

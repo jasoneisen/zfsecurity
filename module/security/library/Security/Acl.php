@@ -66,16 +66,14 @@ class Security_Acl extends Zend_Acl
     
     protected function recordIsAllowed(Doctrine_Record $object, $resource = null, $privilege = null) {
         
-        $class = get_class($object);
-        
-        if ($class == 'SecurityGroup') {
+        if (get_class($object) == 'SecurityGroup') {
             
             return parent::isAllowed($object->name, $resource, $privilege);
         
-        } elseif ($class == 'User' && $object->Groups->count()) {
+        } elseif (is_subclass_of($object, Security::getParam('accountTableClass')) && $object->Groups->count()) {
             
-            foreach ($onject->Groups as $group) {
-
+            foreach ($object->Groups as $group) {
+                
                 if (true === parent::isAllowed($group->name, $resource, $privilege)) {
                     
                     return true;
