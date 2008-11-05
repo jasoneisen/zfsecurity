@@ -70,7 +70,9 @@ class Security_Acl extends Zend_Acl
             
             return parent::isAllowed($object->name, $resource, $privilege);
         
-        } elseif (is_subclass_of($object, Security::getParam('accountTableClass')) && $object->Groups->count()) {
+        } elseif ((get_class($object) == Security::getParam('accountTableClass') ||
+                   is_subclass_of($object, Security::getParam('accountTableClass')))
+                  && $object->Groups->count()) {
             
             foreach ($object->Groups as $group) {
                 
