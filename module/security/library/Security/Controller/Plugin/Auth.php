@@ -52,6 +52,8 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 
 		    } else {
 		        
+		        $e->type = Zend_Controller_Plugin_ErrorHandler::EXCEPTION_OTHER;
+		        
 		        $this->getResponse()->setException($e);
 		        
 		        $errorHandler = Zend_Controller_Front::getInstance()
