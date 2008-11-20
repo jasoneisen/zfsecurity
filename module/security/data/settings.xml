@@ -64,6 +64,18 @@
         <description>Time in which sessions should expire (leave empty for browser default)</description>
         <required>0</required>
     </sessionExpiration>
+    <loginRouteName>
+        <label>Custom Login Route Name</label>
+        <type>string</type>
+        <description>Name of the route to redirect to when a user needs to log in, if not using the security system's default login form.</description>
+        <required>0</required>
+    </loginRouteName>
+    <postLogoutRouteName>
+        <label>Custom Post-Logout Route Name</label>
+        <type>string</type>
+        <description>Name of the route to redirect to when a user has logged out (defaults to login route).</description>
+        <required>0</required>
+    </postLogoutRouteName>
     <useSecurityErrorController>
         <label>Use Security Error Controller</label>
         <type>bool</type>

@@ -1,0 +1,11 @@
+<?php echo $this->partial('partials/heading.phtml', array('heading' => 'Update System')); ?>
+<p>Current Version: <b><?php echo $this->current; ?></b></p>
+<p>Latest Version: <b><?php echo $this->latest; ?></b></p>
+<?php if ($this->current < $this->latest): ?>
+<form method="post">
+<input type="submit" name="submit" value="Update to version <?php echo $this->latest; ?>">
+</form>
+<?php else: ?>
+<p>Your security system is up to date</p>
+<?php endif; ?>
+<p><a href="<?php echo $this->url(array(), 'security_root_path', true); ?>">&lt;&lt; Back</a></p>

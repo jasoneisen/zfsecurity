@@ -24,6 +24,14 @@
             <action>acl</action>
         </defaults>
     </security_update_acl_path>
+    <security_update_system_path>
+        <route>security/update/system/*</route>
+        <defaults>
+            <module>security</module>
+            <controller>update</controller>
+            <action>system</action>
+        </defaults>
+    </security_update_system_path>
     <security_settings_path>
         <route>security/settings/*</route>
         <defaults>

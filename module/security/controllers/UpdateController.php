@@ -55,6 +55,24 @@ class Security_UpdateController extends Security_Controller_Action_Backend
         }
     }
     
+    public function systemAction()
+    {
+        $migrationPath = Security::getParam('dataPath') . DIRECTORY_SEPARATOR . 'migrations';
+        $migration = new Security_Migration($migrationPath);
+        
+        $current = $migration->getCurrentVersion();
+        $latest = $migration->getLatestVersion();
+        
+        if ($this->getRequest()->isPost() && $current < $latest) {
+            
+            $migration->migrate($latest);
+            $this->view->message = "Migration successfully performed";
+        }
+        
+        $this->view->current = $migration->getCurrentVersion();
+        $this->view->latest = $migration->getLatestVersion();
+    }
+    
     protected function _addPart($part)
     {
         if (!isset($this->_aclParts[$part->name])) {

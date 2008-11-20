@@ -21,10 +21,6 @@ class Security_SessionsController extends Security_Controller_Action_Backend
             }
         }
     }
-    public function indexAction()
-    {
-        $this->_forward('new');
-    }    
     
     public function newAction()
     {
