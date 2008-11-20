@@ -7,7 +7,7 @@ $basePath = dirname(dirname(__FILE__)) . $ds;
 
 set_include_path(
     $basePath.'library'.$ps.
-    $basePath.'library'.$ds.'doctrine'.$ps.
+    $basePath.'library'.$ds.'Doctrine'.$ps.
     $basePath.'application'.$ds.'library'.$ps.
     $basePath.'application'.$ds.'models'.$ps.
     $basePath.'application'.$ds.'models'.$ds.'generated'.$ps.
