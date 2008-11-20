@@ -41,6 +41,12 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		    
 		    if (!$account instanceof Doctrine_Record) {
 		        
+		        if ($loginRouteName = Security::getParam('loginRouteName')) {
+		            $path = $loginRouteName;
+		        } else {
+		            $path = 'new_security_session_path';
+		        }
+		        
 		        $uri = str_replace($request->getBaseUrl(), '', $request->getRequestUri());
 		        
 		        $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger');
@@ -48,7 +54,7 @@ class Security_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		        $flashMessenger->addMessage($uri);
 		        
 		        $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector');
-		        $redirector->gotoRouteAndExit(array(), 'new_security_session_path', true);
+		        $redirector->gotoRouteAndExit(array(), $path, true);
 
 		    } else {
 		        

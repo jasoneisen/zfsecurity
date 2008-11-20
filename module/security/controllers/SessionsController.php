@@ -121,7 +121,14 @@ class Security_SessionsController extends Security_Controller_Action_Backend
     {
         Zend_Auth::getInstance()->clearIdentity();
 		Zend_Session::destroy();
-        $this->getHelper('Redirector')->gotoRoute(array(), 'new_security_session_path', true);
+		
+		if ($postLogoutRouteName = Security::getParam('postLogoutRouteName')) {
+            $path = $postLogoutRouteName;
+        } else {
+            $path = 'new_security_session_path';
+        }
+        
+        $this->getHelper('Redirector')->gotoRoute(array(), $path, true);
     }
     
     protected function _generateForm()
